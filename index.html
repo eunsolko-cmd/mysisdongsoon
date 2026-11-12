@@ -1,0 +1,90 @@
+<title>고은영 홈페이지</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap">
+<style>
+/* 레이아웃: 왼쪽 정렬 한 줄 기둥. 큰 이름 아래에 짧은 소개가 쌓이는 개인 명함 페이지 */
+:root {
+  --bg: #F2F5F6;
+  --surface: #FFFFFF;
+  --fg: #1C2630;
+  --muted: #5C6B77;
+  --line: #D8E0E4;
+  --accent: #2C6E69;
+  --font-display: "Gowun Batang", "Noto Serif KR", serif;
+  --font-body: "Noto Sans KR", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11181E; --surface: #18222A; --fg: #E5EBEF; --muted: #98A7B2; --line: #2A3841; --accent: #7CC8BF;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11181E; --surface: #18222A; --fg: #E5EBEF; --muted: #98A7B2; --line: #2A3841; --accent: #7CC8BF;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.75;
+  padding-block: 72px 56px;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+main { max-width: 620px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+.eyebrow { font-size: 13px; letter-spacing: .14em; color: var(--accent); margin: 0 0 14px; }
+h1 {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(48px, 13vw, 80px); line-height: 1.1; margin: 0 0 20px; text-wrap: balance;
+}
+.lead { font-size: 18px; color: var(--muted); margin: 0; max-width: 34em; }
+.notice {
+  margin-top: 28px; display: inline-block; padding: 8px 14px; font-size: 14px;
+  border: 1px dashed var(--line); border-radius: 4px; color: var(--muted);
+}
+section { display: grid; grid-template-columns: 96px 1fr; gap: 8px 24px; padding-top: 28px; border-top: 1px solid var(--line); }
+h2 { font-size: 14px; font-weight: 500; letter-spacing: .08em; color: var(--muted); margin: 4px 0 0; }
+section > div { min-width: 0; }
+p { margin: 0 0 12px; }
+ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+li { padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
+.addr { user-select: all; overflow-wrap: anywhere; color: var(--accent); }
+footer { max-width: 620px; margin: 56px auto 0; font-size: 13px; color: var(--muted); }
+@media (max-width: 520px) { section { grid-template-columns: 1fr; } }
+</style>
+
+<main>
+  <header>
+    <p class="eyebrow">EUNYOUNG KO</p>
+    <h1>고은영</h1>
+    <p class="lead">안녕하세요, 고은영입니다. 여기는 제 이야기를 모아 두는 작은 공간이에요.</p>
+    <span class="notice">샘플 문구입니다. 곧 진짜 내용으로 바뀝니다.</span>
+  </header>
+
+  <section>
+    <h2>소개</h2>
+    <div>
+      <p>자기소개 두세 문장이 들어갈 자리예요. 어떤 사람인지, 요즘 무엇에 관심이 있는지 편하게 적으면 됩니다.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>하는 일</h2>
+    <div>
+      <ul>
+        <li>하는 일 또는 좋아하는 것 하나</li>
+        <li>하는 일 또는 좋아하는 것 둘</li>
+        <li>하는 일 또는 좋아하는 것 셋</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>연락</h2>
+    <div>
+      <p>이메일 <span class="addr">example@email.com</span></p>
+      <p>인스타그램 <span class="addr">@instagram_id</span></p>
+    </div>
+  </section>
+</main>
+<footer>© 2026 고은영</footer>
