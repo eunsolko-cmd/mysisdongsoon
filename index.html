@@ -88,26 +88,32 @@ h2.sec { font-family: var(--font-display); font-size: 20px; margin: 8px 0 -8px; 
 .view { display: flex; flex-direction: column; gap: 28px; }
 .view[hidden] { display: none; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.prayer { display: flex; flex-direction: column; gap: 16px; }
-.prayer textarea { font: inherit; font-size: 16px; width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); resize: vertical; }
-.prow { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 8px; }
-.prow select { font: inherit; font-size: 16px; padding: 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); min-width: 0; }
-.prow .btn.main { padding: 12px 18px; font-size: 16px; }
+.prayer { display: flex; flex-direction: column; gap: 20px; }
+.nform { display: flex; flex-direction: column; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.nh { font-family: var(--font-display); font-size: 18px; margin: 0; }
+.nrow2 { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.fl { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); min-width: 0; }
+.fl input { font: inherit; font-size: 16px; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); width: 100%; min-width: 0; }
+.soap label { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+.badge { display: inline-flex; width: 26px; height: 26px; align-items: center; justify-content: center; border-radius: 50%; background: var(--accent); color: var(--on-accent); font-size: 14px; font-weight: 700; flex: none; }
+.bh { margin: 4px 0 6px; font-size: 13px; color: var(--muted); line-height: 1.5; }
+.prayer textarea { font: inherit; font-size: 16px; width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); resize: vertical; }
+.nbtns { display: flex; gap: 8px; }
+.nbtns .btn { flex: 1; padding: 14px 8px; font-size: 16px; }
+.nbtns .btn.main { flex: 2; }
+.plist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.plist li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.nsum { width: 100%; text-align: left; background: none; border: 0; padding: 14px; font: inherit; color: var(--fg); cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
+.nmeta { font-size: 13px; color: var(--muted); }
+.nprev { font-size: 15px; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.nbody { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--line); }
+.nblk { display: flex; flex-direction: column; gap: 2px; padding-top: 10px; }
+.nblk b { font-size: 13px; color: var(--accent); font-weight: 700; }
+.nblk p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 16px; }
+.pact { display: flex; gap: 8px; flex-wrap: wrap; }
+.pact button { font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: transparent; color: var(--fg); cursor: pointer; }
 .prow2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
 .prow2 .btn, #doImport { font-size: 14px; padding: 12px 6px; }
-.pfilter { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
-.plist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.plist li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
-.pmeta { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); }
-.pill { font-size: 12px; white-space: nowrap; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--accent); color: var(--accent); }
-.ptext { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
-.pact { display: flex; gap: 8px; flex-wrap: wrap; }
-.pact button { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line); background: transparent; color: var(--fg); cursor: pointer; }
-.plist li.done { opacity: .85; }
-.pedit { display: flex; flex-direction: column; gap: 8px; }
-.pedit select { font: inherit; font-size: 16px; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); align-self: flex-start; }
-.pact[hidden] { display: none; }
-.plist li.done .pill { background: var(--accent); color: var(--on-accent); }
 label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--muted); }
 #doImport { margin-top: 8px; width: 100%; }
 @media (prefers-reduced-motion: reduce) { .bar { transition: none; } .bubble { animation: none; } }
@@ -181,34 +187,46 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
 
   <div class="view" id="view-prayer" hidden>
     <section class="prayer" aria-label="기도노트">
-      <form id="pForm">
-        <label class="sr" for="pText">기도 제목</label>
-        <textarea id="pText" rows="3" maxlength="500" placeholder="기도 제목을 적어 보세요"></textarea>
-        <div class="prow">
-          <label class="sr" for="pKind">기도 종류</label>
-          <select id="pKind">
-            <option value="청원">청원</option>
-            <option value="전구">전구</option>
-            <option value="감사">감사</option>
-            <option value="통회">통회</option>
-            <option value="흠숭">흠숭</option>
-          </select>
-          <button class="btn main" type="submit">기도 올리기</button>
+      <form id="nForm" class="nform">
+        <h2 class="nh" id="nHead">오늘의 기도노트</h2>
+        <div class="nrow2">
+          <label class="fl">날짜<input id="nDate" type="date"></label>
+          <label class="fl">오늘 읽은 본문<input id="nRef" type="text" maxlength="60" placeholder="예: 요한복음 3장"></label>
         </div>
-        <p class="hint">청원은 구하는 기도, 전구는 남을 위한 기도, 통회는 반성, 흠숭은 찬미예요.</p>
+        <div class="soap">
+          <label for="nS"><span class="badge">S</span>성경 (Scripture)</label>
+          <p class="bh">오늘 읽은 구절 중 눈에 밟히거나 와닿는 1~2구절 필사</p>
+          <textarea id="nS" rows="3" maxlength="1000"></textarea>
+        </div>
+        <div class="soap">
+          <label for="nO"><span class="badge">O</span>관찰 (Observation)</label>
+          <p class="bh">본문에서 하나님은 어떤 분으로 묘사되는지, 어떤 교훈이나 약속이 있는지 객관적으로 한 줄 정리</p>
+          <textarea id="nO" rows="2" maxlength="1000"></textarea>
+        </div>
+        <div class="soap">
+          <label for="nA"><span class="badge">A</span>적용 (Application)</label>
+          <p class="bh">이 말씀이 지금 내 일상, 내 인간관계, 내 현재 고민에 어떻게 닿아 있는지 적기</p>
+          <textarea id="nA" rows="3" maxlength="1000"></textarea>
+        </div>
+        <div class="soap">
+          <label for="nP"><span class="badge">P</span>기도 (Prayer)</label>
+          <p class="bh">그 깨달음을 바탕으로 드리는 짧은 기도</p>
+          <textarea id="nP" rows="3" maxlength="1000"></textarea>
+        </div>
+        <div class="nbtns">
+          <button class="btn main" type="submit" id="nSave">저장하기</button>
+          <button class="btn" type="button" id="nCancel" hidden>취소</button>
+        </div>
+        <p class="hint" id="nMsg" role="status" aria-live="polite"></p>
       </form>
 
-      <div class="pfilter" role="tablist" aria-label="기도 보기">
-        <button class="ftab" role="tab" data-f="pray" aria-selected="true">기도 중</button>
-        <button class="ftab" role="tab" data-f="done" aria-selected="false">응답받음</button>
-        <button class="ftab" role="tab" data-f="all" aria-selected="false">전체</button>
-      </div>
-      <ul id="pList" class="plist"></ul>
-      <p class="hint" id="pEmpty"></p>
+      <h2 class="nh">지난 기도노트</h2>
+      <ul id="nList" class="plist"></ul>
+      <p class="hint" id="nEmpty"></p>
 
       <details>
         <summary>백업하기 · 불러오기</summary>
-        <p class="hint">기도 내용은 이 폰의 브라우저에만 저장되고 다른 곳으로 보내지 않아요. 대신 브라우저 기록을 지우거나 폰을 바꾸면 사라지니, 가끔 아래에서 복사해 메모 앱에 보관해 두세요.</p>
+        <p class="hint">기도노트는 이 폰의 브라우저에만 저장되고 다른 곳으로 보내지 않아요. 대신 브라우저 기록을 지우거나 폰을 바꾸면 사라지니, 가끔 아래에서 복사해 메모 앱에 보관해 두세요.</p>
         <div class="prow2">
           <button class="btn" id="copyText" type="button">읽기 좋은 글로 복사</button>
           <button class="btn" id="copyCode" type="button">백업 코드 복사</button>
@@ -626,131 +644,160 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
   try { var sv = localStorage.getItem(VKEY); if (sv === "pet" || sv === "timer" || sv === "prayer") firstView = sv; } catch (e) {}
   showView(firstView);
 
-  /* 기도노트 */
-  var items = [], filter = "pray";
-  var KINDS = ["청원", "전구", "감사", "통회", "흠숭"];
+  /* 기도노트: SOAP 양식 (성경, 관찰, 적용, 기도) */
+  var NKEY = "eunyoung-soap-v1", DKEY = "eunyoung-soap-draft-v1", OLDKEY = "eunyoung-prayer-v1";
+  var notes = [], editingId = null, openIds = {};
+  var SOAP = [["s", "S 성경", "nS"], ["o", "O 관찰", "nO"], ["a", "A 적용", "nA"], ["p", "P 기도", "nP"]];
   function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
   function todayIso() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
-  function clean(o) {
-    if (!o || typeof o.text !== "string" || !o.text.trim()) return null;
-    return { id: typeof o.id === "string" && o.id ? o.id : uid(), text: o.text.slice(0, 500),
-      kind: KINDS.indexOf(o.kind) >= 0 ? o.kind : "청원",
-      created: typeof o.created === "string" ? o.created.slice(0, 10) : todayIso(),
-      answered: o.answered === true, answeredAt: typeof o.answeredAt === "string" ? o.answeredAt.slice(0, 10) : "" };
+  function str(v, n) { return typeof v === "string" ? v.slice(0, n) : ""; }
+  function clean(x) {
+    if (!x || typeof x !== "object") return null;
+    var d = typeof x.date === "string" ? x.date.slice(0, 10) : "";
+    var n = { id: typeof x.id === "string" && x.id ? x.id : uid(), date: /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : todayIso(),
+      ref: str(x.ref, 60), s: str(x.s, 1000), o: str(x.o, 1000), a: str(x.a, 1000), p: str(x.p, 1000) };
+    return (n.s.trim() || n.o.trim() || n.a.trim() || n.p.trim()) ? n : null;
+  }
+  /* 예전 기도 제목 형식(text)은 P(기도)로 옮겨 담는다 */
+  function cvt(x) {
+    if (x && typeof x.text === "string") {
+      return clean({ id: x.id, date: x.created, p: x.text + (x.answered ? " (응답받음 " + (x.answeredAt || "") + ")" : "") });
+    }
+    return clean(x);
   }
   function load() {
     try {
-      var arr = JSON.parse(localStorage.getItem(PKEY) || "[]");
-      if (Array.isArray(arr)) items = arr.map(clean).filter(Boolean);
+      var raw = localStorage.getItem(NKEY);
+      if (raw === null) {
+        var old = JSON.parse(localStorage.getItem(OLDKEY) || "[]");
+        if (Array.isArray(old)) notes = old.map(cvt).filter(Boolean);
+        if (notes.length) save();
+      } else {
+        var arr = JSON.parse(raw);
+        if (Array.isArray(arr)) notes = arr.map(clean).filter(Boolean);
+      }
     } catch (e) {}
   }
   function save() {
-    try { localStorage.setItem(PKEY, JSON.stringify(items)); return true; }
-    catch (e) { msg("이 브라우저에서는 저장이 안 돼요. 비공개 창이면 일반 창에서 열어 주세요."); return false; }
+    try { localStorage.setItem(NKEY, JSON.stringify(notes)); return true; }
+    catch (e) { nmsg("이 브라우저에서는 저장이 안 돼요. 비공개 창이면 일반 창에서 열어 주세요."); return false; }
   }
-  function msg(t) { $("pMsg").textContent = t; }
-  function fmtDate(iso) { var p = iso.split("-"); return p.length === 3 ? p[0] + "." + Number(p[1]) + "." + Number(p[2]) : iso; }
+  function nmsg(t) { $("nMsg").textContent = t; }
+  function pmsg(t) { $("pMsg").textContent = t; }
+  function fmtDate(iso) { var p = iso.split("-"); return p[0] + "." + Number(p[1]) + "." + Number(p[2]); }
+
+  function readForm() {
+    return { date: $("nDate").value || todayIso(), ref: $("nRef").value.trim(),
+      s: $("nS").value, o: $("nO").value, a: $("nA").value, p: $("nP").value };
+  }
+  function fillForm(n) {
+    $("nDate").value = n.date || todayIso(); $("nRef").value = n.ref || "";
+    $("nS").value = n.s || ""; $("nO").value = n.o || ""; $("nA").value = n.a || ""; $("nP").value = n.p || "";
+  }
+  function saveDraft() { if (editingId) return; try { localStorage.setItem(DKEY, JSON.stringify(readForm())); } catch (e) {} }
+  function clearDraft() { try { localStorage.removeItem(DKEY); } catch (e) {} }
+  function setMode(editing) {
+    $("nHead").textContent = editing ? "기도노트 고치기" : "오늘의 기도노트";
+    $("nSave").textContent = editing ? "고친 내용 저장" : "저장하기";
+    $("nCancel").hidden = !editing;
+  }
+  ["nDate", "nRef", "nS", "nO", "nA", "nP"].forEach(function (id) { $(id).addEventListener("input", saveDraft); });
 
   function render() {
-    document.querySelectorAll(".ftab").forEach(function (b) { b.setAttribute("aria-selected", String(b.getAttribute("data-f") === filter)); });
-    var list = items.filter(function (it) { return filter === "all" || (filter === "done") === it.answered; });
-    list.sort(function (a, b) { return a.created < b.created ? 1 : a.created > b.created ? -1 : 0; });
-    var ul = $("pList"); ul.innerHTML = "";
-    list.forEach(function (it) {
-      var li = document.createElement("li"); if (it.answered) li.className = "done";
-      var meta = document.createElement("div"); meta.className = "pmeta";
-      var pill = document.createElement("span"); pill.className = "pill"; pill.textContent = it.answered ? "응답받음 · " + it.kind : it.kind;
-      var dt = document.createElement("span"); dt.textContent = fmtDate(it.created) + (it.answered && it.answeredAt ? " → " + fmtDate(it.answeredAt) : "");
-      meta.appendChild(pill); meta.appendChild(dt);
-      var p = document.createElement("p"); p.className = "ptext"; p.textContent = it.text;
-      var act = document.createElement("div"); act.className = "pact";
-      var b1 = document.createElement("button"); b1.type = "button";
-      b1.textContent = it.answered ? "다시 기도 중으로" : "응답받았어요, 감사";
-      b1.addEventListener("click", function () {
-        it.answered = !it.answered; it.answeredAt = it.answered ? todayIso() : ""; save(); render();
-      });
-      var b2 = document.createElement("button"); b2.type = "button"; b2.textContent = "지우기";
-      var armed = false, tm = null;
-      b2.addEventListener("click", function () {
-        if (!armed) { armed = true; b2.textContent = "정말 지울까요?"; tm = setTimeout(function () { armed = false; b2.textContent = "지우기"; }, 3000); return; }
-        clearTimeout(tm); items = items.filter(function (x) { return x.id !== it.id; }); save(); render();
-      });
-      var b3 = document.createElement("button"); b3.type = "button"; b3.textContent = "고치기";
-      b3.addEventListener("click", function () {
-        var box = document.createElement("div"); box.className = "pedit";
-        var ta = document.createElement("textarea"); ta.rows = 3; ta.maxLength = 500; ta.value = it.text;
-        ta.setAttribute("aria-label", "기도 제목 고치기");
-        var sel = document.createElement("select"); sel.setAttribute("aria-label", "기도 종류 고치기");
-        KINDS.forEach(function (k) { var o = document.createElement("option"); o.value = k; o.textContent = k; sel.appendChild(o); });
-        sel.value = it.kind;
-        var row = document.createElement("div"); row.className = "pact";
-        var ok = document.createElement("button"); ok.type = "button"; ok.textContent = "저장";
-        var no = document.createElement("button"); no.type = "button"; no.textContent = "취소";
-        ok.addEventListener("click", function () {
-          var t = ta.value.trim();
-          if (!t) { msg("기도 제목을 비워 둘 수는 없어요. 지우려면 지우기를 눌러 주세요."); return; }
-          it.text = t; it.kind = sel.value; save(); msg(""); render();
+    var list = notes.map(function (n, i) { return { n: n, i: i }; });
+    list.sort(function (a, b) { return a.n.date < b.n.date ? 1 : a.n.date > b.n.date ? -1 : b.i - a.i; });
+    var ul = $("nList"); ul.innerHTML = "";
+    list.forEach(function (w) {
+      var n = w.n, li = document.createElement("li");
+      var sum = document.createElement("button"); sum.type = "button"; sum.className = "nsum";
+      var open = !!openIds[n.id]; sum.setAttribute("aria-expanded", String(open));
+      var meta = document.createElement("span"); meta.className = "nmeta"; meta.textContent = fmtDate(n.date) + (n.ref ? " · " + n.ref : "");
+      var prev = document.createElement("span"); prev.className = "nprev";
+      prev.textContent = n.s.trim() || n.p.trim() || n.a.trim() || n.o.trim();
+      sum.appendChild(meta); if (!open) sum.appendChild(prev);
+      sum.addEventListener("click", function () { openIds[n.id] = !openIds[n.id]; render(); });
+      li.appendChild(sum);
+      if (open) {
+        var body = document.createElement("div"); body.className = "nbody";
+        SOAP.forEach(function (f) {
+          if (!n[f[0]].trim()) return;
+          var blk = document.createElement("div"); blk.className = "nblk";
+          var b = document.createElement("b"); b.textContent = f[1];
+          var p = document.createElement("p"); p.textContent = n[f[0]];
+          blk.appendChild(b); blk.appendChild(p); body.appendChild(blk);
         });
-        no.addEventListener("click", render);
-        row.appendChild(ok); row.appendChild(no);
-        box.appendChild(ta); box.appendChild(sel); box.appendChild(row);
-        li.replaceChild(box, p); act.hidden = true; ta.focus();
-      });
-      act.appendChild(b1); act.appendChild(b3); act.appendChild(b2);
-      li.appendChild(meta); li.appendChild(p); li.appendChild(act); ul.appendChild(li);
+        var act = document.createElement("div"); act.className = "pact";
+        var b1 = document.createElement("button"); b1.type = "button"; b1.textContent = "고치기";
+        b1.addEventListener("click", function () {
+          editingId = n.id; fillForm(n); setMode(true); nmsg("");
+          $("nForm").scrollIntoView({ behavior: "smooth", block: "start" }); $("nS").focus();
+        });
+        var b2 = document.createElement("button"); b2.type = "button"; b2.textContent = "지우기";
+        var armed = false, tm = null;
+        b2.addEventListener("click", function () {
+          if (!armed) { armed = true; b2.textContent = "정말 지울까요?"; tm = setTimeout(function () { armed = false; b2.textContent = "지우기"; }, 3000); return; }
+          clearTimeout(tm); notes = notes.filter(function (x) { return x.id !== n.id; });
+          if (editingId === n.id) { editingId = null; fillForm({}); setMode(false); }
+          save(); render();
+        });
+        act.appendChild(b1); act.appendChild(b2); body.appendChild(act); li.appendChild(body);
+      }
+      ul.appendChild(li);
     });
-    var e = $("pEmpty");
-    e.textContent = list.length ? "" : (filter === "done" ? "아직 응답받은 기도가 없어요." : filter === "pray" ? "기도 제목을 적어 올려 보세요." : "아직 적은 기도가 없어요.");
+    $("nEmpty").textContent = list.length ? "" : "아직 적은 기도노트가 없어요. 위에서 오늘 것을 적어 보세요.";
   }
 
-  $("pForm").addEventListener("submit", function (ev) {
+  $("nForm").addEventListener("submit", function (ev) {
     ev.preventDefault();
-    var t = $("pText").value.trim();
-    if (!t) { msg("기도 제목을 먼저 적어 주세요."); return; }
-    items.push({ id: uid(), text: t, kind: $("pKind").value, created: todayIso(), answered: false, answeredAt: "" });
-    if (save()) { $("pText").value = ""; msg(""); }
-    filter = "pray"; render();
+    var n = clean(Object.assign({ id: editingId || uid() }, readForm()));
+    if (!n) { nmsg("S, O, A, P 중 하나라도 적어 주세요."); return; }
+    if (editingId) { notes = notes.map(function (x) { return x.id === editingId ? n : x; }); }
+    else notes.push(n);
+    if (!save()) return;
+    openIds[n.id] = true; editingId = null; clearDraft(); fillForm({}); setMode(false); nmsg("저장했어요."); render();
   });
-  document.querySelectorAll(".ftab").forEach(function (b) {
-    b.addEventListener("click", function () { filter = b.getAttribute("data-f"); render(); });
+  $("nCancel").addEventListener("click", function () {
+    editingId = null; fillForm({}); setMode(false); nmsg(""); render();
   });
 
   function toText() {
-    return items.slice().sort(function (a, b) { return a.created < b.created ? -1 : 1; }).map(function (it) {
-      return "[" + it.kind + "] " + it.created + " " + it.text + (it.answered ? " (응답받음 " + (it.answeredAt || "") + ")" : "");
-    }).join("\n");
+    return notes.slice().sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; }).map(function (n) {
+      var lines = ["[" + fmtDate(n.date) + (n.ref ? " " + n.ref : "") + "]"];
+      SOAP.forEach(function (f) { if (n[f[0]].trim()) lines.push(f[1] + ": " + n[f[0]]); });
+      return lines.join("\n");
+    }).join("\n\n");
   }
   function copyOut(text, okMsg) {
     var out = $("backupOut"); out.hidden = false; out.value = text; out.focus(); out.select();
-    var done = function () { msg(okMsg); };
     var fallback = function () {
       var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
-      msg(ok ? okMsg : "복사가 안 되면 위 글을 길게 눌러 직접 복사해 주세요.");
+      pmsg(ok ? okMsg : "복사가 안 되면 위 글을 길게 눌러 직접 복사해 주세요.");
     };
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { pmsg(okMsg); }, fallback); else fallback();
   }
   $("copyText").addEventListener("click", function () {
-    if (!items.length) { msg("복사할 기도가 아직 없어요."); return; }
+    if (!notes.length) { pmsg("복사할 기도노트가 아직 없어요."); return; }
     copyOut(toText(), "읽기 좋은 글로 복사했어요. 메모 앱에 붙여넣어 보관하세요.");
   });
   $("copyCode").addEventListener("click", function () {
-    if (!items.length) { msg("복사할 기도가 아직 없어요."); return; }
-    copyOut(JSON.stringify(items), "백업 코드를 복사했어요. 메모 앱에 붙여넣어 보관하세요.");
+    if (!notes.length) { pmsg("복사할 기도노트가 아직 없어요."); return; }
+    copyOut(JSON.stringify(notes), "백업 코드를 복사했어요. 메모 앱에 붙여넣어 보관하세요.");
   });
   $("doImport").addEventListener("click", function () {
     var raw = $("backupIn").value.trim();
-    if (!raw) { msg("불러올 백업 코드를 붙여넣어 주세요."); return; }
-    var arr;
-    try { arr = JSON.parse(raw); } catch (e) { arr = null; }
-    if (!Array.isArray(arr)) { msg("백업 코드가 맞지 않아요. 복사한 코드를 처음부터 끝까지 붙여넣어 주세요."); return; }
-    var have = {}; items.forEach(function (x) { have[x.id] = true; });
+    if (!raw) { pmsg("불러올 백업 코드를 붙여넣어 주세요."); return; }
+    var arr; try { arr = JSON.parse(raw); } catch (e) { arr = null; }
+    if (!Array.isArray(arr)) { pmsg("백업 코드가 맞지 않아요. 복사한 코드를 처음부터 끝까지 붙여넣어 주세요."); return; }
+    var have = {}; notes.forEach(function (x) { have[x.id] = true; });
     var added = 0;
-    arr.map(clean).filter(Boolean).forEach(function (x) { if (!have[x.id]) { items.push(x); have[x.id] = true; added++; } });
-    if (save()) { msg(added + "개를 불러왔어요."); $("backupIn").value = ""; }
+    arr.map(cvt).filter(Boolean).forEach(function (x) { if (!have[x.id]) { notes.push(x); have[x.id] = true; added++; } });
+    if (save()) { pmsg(added + "개를 불러왔어요."); $("backupIn").value = ""; }
     render();
   });
 
-  load(); render();
+  load();
+  try { var dr = JSON.parse(localStorage.getItem(DKEY) || "null"); if (dr && typeof dr === "object") fillForm(dr); else fillForm({}); } catch (e) { fillForm({}); }
+  render();
 })();
 </script>
 </body>
