@@ -70,10 +70,11 @@ summary { cursor: pointer; color: var(--muted); font-size: 15px; }
 .pet { display: flex; flex-direction: column; gap: 14px; align-items: center; }
 .stage { position: relative; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
 #pet { display: block; width: 100%; height: auto; aspect-ratio: 56 / 40; image-rendering: pixelated; }
-.bubble { position: absolute; left: 50%; top: 6%; padding: 4px 14px; border-radius: 14px; background: var(--bg); border: 2px solid var(--fg); font-weight: 700; font-size: clamp(22px, 7vw, 30px); white-space: nowrap; transform: translateX(-10%); animation: pop .25s ease-out; }
+.bubble { position: absolute; left: 50%; top: 6%; padding: 4px 14px; border-radius: 14px; background: var(--bg); border: 2px solid var(--fg); font-weight: 700; font-size: clamp(22px, 7vw, 30px); white-space: nowrap; --tx: -10%; transform: translateX(var(--tx)); animation: pop .25s ease-out; }
+.bubble.long { --tx: -50%; top: 2%; font-size: clamp(17px, 5.4vw, 24px); }
 .bubble.angry { color: #D9362B; border-color: #D9362B; }
 .bubble.happy { color: var(--accent); border-color: var(--accent); }
-@keyframes pop { from { transform: translateX(-10%) scale(.4); } to { transform: translateX(-10%) scale(1); } }
+@keyframes pop { from { transform: translateX(var(--tx)) scale(.4); } to { transform: translateX(var(--tx)) scale(1); } }
 .pet-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
 .pet-btns .btn { display: flex; flex-direction: column; align-items: center; gap: 2px; font-weight: 700; font-size: 18px; padding: 14px 8px; }
 .pet-btns .btn small { font-weight: 400; font-size: 12px; opacity: .85; }
@@ -321,6 +322,7 @@ h2.sec { font-family: var(--font-display); font-size: 20px; margin: 8px 0 -8px; 
   ];
   OBJS.forEach(function (o) { o.h = Math.max.apply(null, o.rects.map(function (r) { return r[1] + r[3]; })); });
 
+  var SHOUTS = ["쌍!", "해도해도 너무해!"];
   var mode = "idle", start = 0, obj = null, smashed = false, objIdx = -1, shakeUntil = 0;
   var lastHeart = 0, lastSteam = 0, lastFrame = 0, parts = [];
   var bubble = document.getElementById("bubble");
@@ -505,7 +507,8 @@ h2.sec { font-family: var(--font-display); font-size: 20px; margin: 8px 0 -8px; 
     ensureAudio(); rollDay();
     mode = "angry"; start = performance.now(); smashed = false;
     objIdx = (objIdx + 1) % OBJS.length; obj = OBJS[objIdx];
-    say("쌍!", "angry");
+    var line = SHOUTS[Math.floor(Math.random() * SHOUTS.length)];
+    say(line, "angry" + (line.length > 4 ? " long" : ""));
     counts.angry += 1; save(); renderUi();
   });
   document.getElementById("btnHappy").addEventListener("click", function () {
