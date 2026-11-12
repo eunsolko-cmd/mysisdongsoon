@@ -82,6 +82,34 @@ summary { cursor: pointer; color: var(--muted); font-size: 15px; }
 .pet-btns .btn.happy { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .sound { font: inherit; font-size: 13px; color: var(--muted); background: none; border: 0; text-decoration: underline; cursor: pointer; padding: 4px; }
 h2.sec { font-family: var(--font-display); font-size: 20px; margin: 8px 0 -8px; padding-top: 24px; border-top: 1px solid var(--line); text-align: center; }
+.views { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.vtab, .ftab { font: inherit; font-size: 15px; padding: 10px 4px; border: 0; background: transparent; color: var(--muted); border-radius: 7px; cursor: pointer; }
+.vtab[aria-selected="true"], .ftab[aria-selected="true"] { background: var(--accent); color: var(--on-accent); font-weight: 500; }
+.view { display: flex; flex-direction: column; gap: 28px; }
+.view[hidden] { display: none; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.prayer { display: flex; flex-direction: column; gap: 16px; }
+.prayer textarea { font: inherit; font-size: 16px; width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); resize: vertical; }
+.prow { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 8px; }
+.prow select { font: inherit; font-size: 16px; padding: 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); min-width: 0; }
+.prow .btn.main { padding: 12px 18px; font-size: 16px; }
+.prow2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+.prow2 .btn, #doImport { font-size: 14px; padding: 12px 6px; }
+.pfilter { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.plist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.plist li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.pmeta { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); }
+.pill { font-size: 12px; white-space: nowrap; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--accent); color: var(--accent); }
+.ptext { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.pact { display: flex; gap: 8px; flex-wrap: wrap; }
+.pact button { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line); background: transparent; color: var(--fg); cursor: pointer; }
+.plist li.done { opacity: .85; }
+.pedit { display: flex; flex-direction: column; gap: 8px; }
+.pedit select { font: inherit; font-size: 16px; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); align-self: flex-start; }
+.pact[hidden] { display: none; }
+.plist li.done .pill { background: var(--accent); color: var(--on-accent); }
+label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--muted); }
+#doImport { margin-top: 8px; width: 100%; }
 @media (prefers-reduced-motion: reduce) { .bar { transition: none; } .bubble { animation: none; } }
 </style>
 </head>
@@ -89,6 +117,13 @@ h2.sec { font-family: var(--font-display); font-size: 20px; margin: 8px 0 -8px; 
 <main>
   <h1>고은영 키우기</h1>
 
+  <nav class="views" role="tablist" aria-label="화면 고르기">
+    <button class="vtab" role="tab" data-view="pet" aria-selected="true">키우기</button>
+    <button class="vtab" role="tab" data-view="timer" aria-selected="false">뽀모도로</button>
+    <button class="vtab" role="tab" data-view="prayer" aria-selected="false">기도노트</button>
+  </nav>
+
+  <div class="view" id="view-pet">
   <section class="pet" aria-label="고은영 아바타">
     <div class="stage">
       <canvas id="pet" width="56" height="40" role="img" aria-label="움직이는 픽셀 아바타 고은영"></canvas>
@@ -101,7 +136,9 @@ h2.sec { font-family: var(--font-display); font-size: 20px; margin: 8px 0 -8px; 
     <button class="sound" id="soundBtn" type="button" aria-pressed="true">소리 켜짐</button>
   </section>
 
-  <h2 class="sec">뽀모도로</h2>
+  </div>
+
+  <div class="view" id="view-timer" hidden>
 
   <div class="tabs" role="tablist" aria-label="타이머 종류">
     <button class="tab" role="tab" id="tab-focus" data-mode="focus" aria-selected="true">집중</button>
@@ -140,6 +177,51 @@ h2.sec { font-family: var(--font-display); font-size: 20px; margin: 8px 0 -8px; 
     </div>
     <p class="hint">집중 4번마다 긴 휴식이 나와요. 시간이 끝나면 소리가 나고, 다음 시간은 직접 시작 버튼을 눌러야 시작해요.</p>
   </details>
+  </div>
+
+  <div class="view" id="view-prayer" hidden>
+    <section class="prayer" aria-label="기도노트">
+      <form id="pForm">
+        <label class="sr" for="pText">기도 제목</label>
+        <textarea id="pText" rows="3" maxlength="500" placeholder="기도 제목을 적어 보세요"></textarea>
+        <div class="prow">
+          <label class="sr" for="pKind">기도 종류</label>
+          <select id="pKind">
+            <option value="청원">청원</option>
+            <option value="전구">전구</option>
+            <option value="감사">감사</option>
+            <option value="통회">통회</option>
+            <option value="흠숭">흠숭</option>
+          </select>
+          <button class="btn main" type="submit">기도 올리기</button>
+        </div>
+        <p class="hint">청원은 구하는 기도, 전구는 남을 위한 기도, 통회는 반성, 흠숭은 찬미예요.</p>
+      </form>
+
+      <div class="pfilter" role="tablist" aria-label="기도 보기">
+        <button class="ftab" role="tab" data-f="pray" aria-selected="true">기도 중</button>
+        <button class="ftab" role="tab" data-f="done" aria-selected="false">응답받음</button>
+        <button class="ftab" role="tab" data-f="all" aria-selected="false">전체</button>
+      </div>
+      <ul id="pList" class="plist"></ul>
+      <p class="hint" id="pEmpty"></p>
+
+      <details>
+        <summary>백업하기 · 불러오기</summary>
+        <p class="hint">기도 내용은 이 폰의 브라우저에만 저장되고 다른 곳으로 보내지 않아요. 대신 브라우저 기록을 지우거나 폰을 바꾸면 사라지니, 가끔 아래에서 복사해 메모 앱에 보관해 두세요.</p>
+        <div class="prow2">
+          <button class="btn" id="copyText" type="button">읽기 좋은 글로 복사</button>
+          <button class="btn" id="copyCode" type="button">백업 코드 복사</button>
+        </div>
+        <label class="sr" for="backupOut">복사할 내용</label>
+        <textarea id="backupOut" rows="3" readonly hidden></textarea>
+        <label class="small" for="backupIn">백업 코드를 붙여넣어 불러오기</label>
+        <textarea id="backupIn" rows="3" placeholder="복사해 둔 백업 코드를 여기에 붙여넣으세요"></textarea>
+        <button class="btn" id="doImport" type="button">불러오기</button>
+        <p class="hint" id="pMsg" role="status" aria-live="polite"></p>
+      </details>
+    </section>
+  </div>
 </main>
 
 <script>
@@ -523,6 +605,152 @@ h2.sec { font-family: var(--font-display); font-size: 20px; margin: 8px 0 -8px; 
 
   load(); renderUi();
   requestAnimationFrame(frame);
+})();
+</script>
+<script>
+/* 화면 고르기 + 기도노트. 기도 내용은 이 브라우저의 localStorage 에만 저장하고 어디에도 보내지 않는다 */
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var VKEY = "eunyoung-view-v1", PKEY = "eunyoung-prayer-v1";
+
+  /* 화면 고르기 */
+  function showView(v) {
+    ["pet", "timer", "prayer"].forEach(function (k) { $("view-" + k).hidden = (k !== v); });
+    document.querySelectorAll(".vtab").forEach(function (b) { b.setAttribute("aria-selected", String(b.getAttribute("data-view") === v)); });
+    try { localStorage.setItem(VKEY, v); } catch (e) {}
+  }
+  document.querySelectorAll(".vtab").forEach(function (b) {
+    b.addEventListener("click", function () { showView(b.getAttribute("data-view")); });
+  });
+  var firstView = "pet";
+  try { var sv = localStorage.getItem(VKEY); if (sv === "pet" || sv === "timer" || sv === "prayer") firstView = sv; } catch (e) {}
+  showView(firstView);
+
+  /* 기도노트 */
+  var items = [], filter = "pray";
+  var KINDS = ["청원", "전구", "감사", "통회", "흠숭"];
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function todayIso() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  function clean(o) {
+    if (!o || typeof o.text !== "string" || !o.text.trim()) return null;
+    return { id: typeof o.id === "string" && o.id ? o.id : uid(), text: o.text.slice(0, 500),
+      kind: KINDS.indexOf(o.kind) >= 0 ? o.kind : "청원",
+      created: typeof o.created === "string" ? o.created.slice(0, 10) : todayIso(),
+      answered: o.answered === true, answeredAt: typeof o.answeredAt === "string" ? o.answeredAt.slice(0, 10) : "" };
+  }
+  function load() {
+    try {
+      var arr = JSON.parse(localStorage.getItem(PKEY) || "[]");
+      if (Array.isArray(arr)) items = arr.map(clean).filter(Boolean);
+    } catch (e) {}
+  }
+  function save() {
+    try { localStorage.setItem(PKEY, JSON.stringify(items)); return true; }
+    catch (e) { msg("이 브라우저에서는 저장이 안 돼요. 비공개 창이면 일반 창에서 열어 주세요."); return false; }
+  }
+  function msg(t) { $("pMsg").textContent = t; }
+  function fmtDate(iso) { var p = iso.split("-"); return p.length === 3 ? p[0] + "." + Number(p[1]) + "." + Number(p[2]) : iso; }
+
+  function render() {
+    document.querySelectorAll(".ftab").forEach(function (b) { b.setAttribute("aria-selected", String(b.getAttribute("data-f") === filter)); });
+    var list = items.filter(function (it) { return filter === "all" || (filter === "done") === it.answered; });
+    list.sort(function (a, b) { return a.created < b.created ? 1 : a.created > b.created ? -1 : 0; });
+    var ul = $("pList"); ul.innerHTML = "";
+    list.forEach(function (it) {
+      var li = document.createElement("li"); if (it.answered) li.className = "done";
+      var meta = document.createElement("div"); meta.className = "pmeta";
+      var pill = document.createElement("span"); pill.className = "pill"; pill.textContent = it.answered ? "응답받음 · " + it.kind : it.kind;
+      var dt = document.createElement("span"); dt.textContent = fmtDate(it.created) + (it.answered && it.answeredAt ? " → " + fmtDate(it.answeredAt) : "");
+      meta.appendChild(pill); meta.appendChild(dt);
+      var p = document.createElement("p"); p.className = "ptext"; p.textContent = it.text;
+      var act = document.createElement("div"); act.className = "pact";
+      var b1 = document.createElement("button"); b1.type = "button";
+      b1.textContent = it.answered ? "다시 기도 중으로" : "응답받았어요, 감사";
+      b1.addEventListener("click", function () {
+        it.answered = !it.answered; it.answeredAt = it.answered ? todayIso() : ""; save(); render();
+      });
+      var b2 = document.createElement("button"); b2.type = "button"; b2.textContent = "지우기";
+      var armed = false, tm = null;
+      b2.addEventListener("click", function () {
+        if (!armed) { armed = true; b2.textContent = "정말 지울까요?"; tm = setTimeout(function () { armed = false; b2.textContent = "지우기"; }, 3000); return; }
+        clearTimeout(tm); items = items.filter(function (x) { return x.id !== it.id; }); save(); render();
+      });
+      var b3 = document.createElement("button"); b3.type = "button"; b3.textContent = "고치기";
+      b3.addEventListener("click", function () {
+        var box = document.createElement("div"); box.className = "pedit";
+        var ta = document.createElement("textarea"); ta.rows = 3; ta.maxLength = 500; ta.value = it.text;
+        ta.setAttribute("aria-label", "기도 제목 고치기");
+        var sel = document.createElement("select"); sel.setAttribute("aria-label", "기도 종류 고치기");
+        KINDS.forEach(function (k) { var o = document.createElement("option"); o.value = k; o.textContent = k; sel.appendChild(o); });
+        sel.value = it.kind;
+        var row = document.createElement("div"); row.className = "pact";
+        var ok = document.createElement("button"); ok.type = "button"; ok.textContent = "저장";
+        var no = document.createElement("button"); no.type = "button"; no.textContent = "취소";
+        ok.addEventListener("click", function () {
+          var t = ta.value.trim();
+          if (!t) { msg("기도 제목을 비워 둘 수는 없어요. 지우려면 지우기를 눌러 주세요."); return; }
+          it.text = t; it.kind = sel.value; save(); msg(""); render();
+        });
+        no.addEventListener("click", render);
+        row.appendChild(ok); row.appendChild(no);
+        box.appendChild(ta); box.appendChild(sel); box.appendChild(row);
+        li.replaceChild(box, p); act.hidden = true; ta.focus();
+      });
+      act.appendChild(b1); act.appendChild(b3); act.appendChild(b2);
+      li.appendChild(meta); li.appendChild(p); li.appendChild(act); ul.appendChild(li);
+    });
+    var e = $("pEmpty");
+    e.textContent = list.length ? "" : (filter === "done" ? "아직 응답받은 기도가 없어요." : filter === "pray" ? "기도 제목을 적어 올려 보세요." : "아직 적은 기도가 없어요.");
+  }
+
+  $("pForm").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var t = $("pText").value.trim();
+    if (!t) { msg("기도 제목을 먼저 적어 주세요."); return; }
+    items.push({ id: uid(), text: t, kind: $("pKind").value, created: todayIso(), answered: false, answeredAt: "" });
+    if (save()) { $("pText").value = ""; msg(""); }
+    filter = "pray"; render();
+  });
+  document.querySelectorAll(".ftab").forEach(function (b) {
+    b.addEventListener("click", function () { filter = b.getAttribute("data-f"); render(); });
+  });
+
+  function toText() {
+    return items.slice().sort(function (a, b) { return a.created < b.created ? -1 : 1; }).map(function (it) {
+      return "[" + it.kind + "] " + it.created + " " + it.text + (it.answered ? " (응답받음 " + (it.answeredAt || "") + ")" : "");
+    }).join("\n");
+  }
+  function copyOut(text, okMsg) {
+    var out = $("backupOut"); out.hidden = false; out.value = text; out.focus(); out.select();
+    var done = function () { msg(okMsg); };
+    var fallback = function () {
+      var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      msg(ok ? okMsg : "복사가 안 되면 위 글을 길게 눌러 직접 복사해 주세요.");
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+  }
+  $("copyText").addEventListener("click", function () {
+    if (!items.length) { msg("복사할 기도가 아직 없어요."); return; }
+    copyOut(toText(), "읽기 좋은 글로 복사했어요. 메모 앱에 붙여넣어 보관하세요.");
+  });
+  $("copyCode").addEventListener("click", function () {
+    if (!items.length) { msg("복사할 기도가 아직 없어요."); return; }
+    copyOut(JSON.stringify(items), "백업 코드를 복사했어요. 메모 앱에 붙여넣어 보관하세요.");
+  });
+  $("doImport").addEventListener("click", function () {
+    var raw = $("backupIn").value.trim();
+    if (!raw) { msg("불러올 백업 코드를 붙여넣어 주세요."); return; }
+    var arr;
+    try { arr = JSON.parse(raw); } catch (e) { arr = null; }
+    if (!Array.isArray(arr)) { msg("백업 코드가 맞지 않아요. 복사한 코드를 처음부터 끝까지 붙여넣어 주세요."); return; }
+    var have = {}; items.forEach(function (x) { have[x.id] = true; });
+    var added = 0;
+    arr.map(clean).filter(Boolean).forEach(function (x) { if (!have[x.id]) { items.push(x); have[x.id] = true; added++; } });
+    if (save()) { msg(added + "개를 불러왔어요."); $("backupIn").value = ""; }
+    render();
+  });
+
+  load(); render();
 })();
 </script>
 </body>
