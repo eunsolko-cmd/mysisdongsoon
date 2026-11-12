@@ -2,11 +2,12 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>고은영 홈페이지</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F2F5F6">
+<title>은영 뽀모도로</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
-/* 레이아웃: 왼쪽 정렬 한 줄 기둥. 큰 이름 아래에 짧은 소개가 쌓이는 개인 명함 페이지 */
+/* 레이아웃: 화면 가운데 한 줄 기둥. 큰 원형 타이머가 중심이고 설정은 아래에 접어 둔다 */
 :root {
   --bg: #F2F5F6;
   --surface: #FFFFFF;
@@ -14,86 +15,263 @@
   --muted: #5C6B77;
   --line: #D8E0E4;
   --accent: #2C6E69;
-  --font-display: "Gowun Batang", "Noto Serif KR", serif;
+  --on-accent: #FFFFFF;
+  --break: #5A7FA8;
+  --font-display: "Gowun Batang", serif;
   --font-body: "Noto Sans KR", system-ui, sans-serif;
+}
+:root.dark-forced, :root[data-theme="dark"] {
+  --bg: #11181E; --surface: #18222A; --fg: #E5EBEF; --muted: #98A7B2; --line: #2A3841;
+  --accent: #7CC8BF; --on-accent: #0E1A1A; --break: #8FB1D6; color-scheme: dark;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #11181E; --surface: #18222A; --fg: #E5EBEF; --muted: #98A7B2; --line: #2A3841; --accent: #7CC8BF;
-    color-scheme: dark;
+    --bg: #11181E; --surface: #18222A; --fg: #E5EBEF; --muted: #98A7B2; --line: #2A3841;
+    --accent: #7CC8BF; --on-accent: #0E1A1A; --break: #8FB1D6; color-scheme: dark;
   }
 }
-:root[data-theme="dark"] {
-  --bg: #11181E; --surface: #18222A; --fg: #E5EBEF; --muted: #98A7B2; --line: #2A3841; --accent: #7CC8BF;
-  color-scheme: dark;
-}
 * { box-sizing: border-box; }
-body { margin: 0; }
+html, body { margin: 0; }
 body {
   background: var(--bg); color: var(--fg);
-  font-family: var(--font-body); font-size: 16px; line-height: 1.75;
-  padding-block: 72px 56px;
+  font-family: var(--font-body); line-height: 1.6;
+  min-height: 100vh;
+  padding-block: max(40px, env(safe-area-inset-top, 0px)) max(40px, env(safe-area-inset-bottom, 0px));
   padding-left: max(20px, env(safe-area-inset-left, 0px));
   padding-right: max(20px, env(safe-area-inset-right, 0px));
 }
-main { max-width: 620px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
-.eyebrow { font-size: 13px; letter-spacing: .14em; color: var(--accent); margin: 0 0 14px; }
-h1 {
-  font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(48px, 13vw, 80px); line-height: 1.1; margin: 0 0 20px; text-wrap: balance;
-}
-.lead { font-size: 18px; color: var(--muted); margin: 0; max-width: 34em; }
-.notice {
-  margin-top: 28px; display: inline-block; padding: 8px 14px; font-size: 14px;
-  border: 1px dashed var(--line); border-radius: 4px; color: var(--muted);
-}
-section { display: grid; grid-template-columns: 96px 1fr; gap: 8px 24px; padding-top: 28px; border-top: 1px solid var(--line); }
-h2 { font-size: 14px; font-weight: 500; letter-spacing: .08em; color: var(--muted); margin: 4px 0 0; }
-section > div { min-width: 0; }
-p { margin: 0 0 12px; }
-ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
-li { padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
-.addr { user-select: all; overflow-wrap: anywhere; color: var(--accent); }
-footer { max-width: 620px; margin: 56px auto 0; font-size: 13px; color: var(--muted); }
-@media (max-width: 520px) { section { grid-template-columns: 1fr; } }
+main { max-width: 420px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; align-items: stretch; }
+h1 { font-family: var(--font-display); font-size: 26px; margin: 0; text-align: center; }
+.tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.tab { font: inherit; font-size: 15px; padding: 10px 4px; border: 0; background: transparent; color: var(--muted); border-radius: 7px; cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--on-accent); font-weight: 500; }
+.dial { position: relative; width: min(100%, 320px); aspect-ratio: 1; margin: 0 auto; }
+.dial svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.track { fill: none; stroke: var(--line); stroke-width: 10; }
+.bar { fill: none; stroke: var(--accent); stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset .3s linear; }
+.dial.is-break .bar { stroke: var(--break); }
+.readout { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.time { font-size: clamp(52px, 17vw, 72px); font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: .02em; line-height: 1.1; }
+.label { font-size: 15px; color: var(--muted); }
+.controls { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 10px; }
+button.btn { font: inherit; font-size: 16px; padding: 14px 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; }
+button.btn.main { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 700; font-size: 18px; }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.count { text-align: center; color: var(--muted); font-size: 15px; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+.dots { display: flex; gap: 8px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--accent); }
+.dot.on { background: var(--accent); }
+details { border-top: 1px solid var(--line); padding-top: 16px; }
+summary { cursor: pointer; color: var(--muted); font-size: 15px; }
+.settings { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.settings label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--muted); min-width: 0; }
+.settings input { font: inherit; font-size: 16px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.hint { font-size: 13px; color: var(--muted); margin: 12px 0 0; }
+@media (prefers-reduced-motion: reduce) { .bar { transition: none; } }
 </style>
-
 </head>
 <body>
 <main>
-  <header>
-    <p class="eyebrow">EUNYOUNG KO</p>
-    <h1>고은영</h1>
-    <p class="lead">안녕하세요, 고은영입니다. 여기는 제 이야기를 모아 두는 작은 공간이에요.</p>
-    <span class="notice">샘플 문구입니다. 곧 진짜 내용으로 바뀝니다.</span>
-  </header>
+  <h1>은영 뽀모도로</h1>
 
-  <section>
-    <h2>소개</h2>
-    <div>
-      <p>자기소개 두세 문장이 들어갈 자리예요. 어떤 사람인지, 요즘 무엇에 관심이 있는지 편하게 적으면 됩니다.</p>
-    </div>
-  </section>
+  <div class="tabs" role="tablist" aria-label="타이머 종류">
+    <button class="tab" role="tab" id="tab-focus" data-mode="focus" aria-selected="true">집중</button>
+    <button class="tab" role="tab" id="tab-short" data-mode="short" aria-selected="false">짧은 휴식</button>
+    <button class="tab" role="tab" id="tab-long" data-mode="long" aria-selected="false">긴 휴식</button>
+  </div>
 
-  <section>
-    <h2>하는 일</h2>
-    <div>
-      <ul>
-        <li>하는 일 또는 좋아하는 것 하나</li>
-        <li>하는 일 또는 좋아하는 것 둘</li>
-        <li>하는 일 또는 좋아하는 것 셋</li>
-      </ul>
+  <div class="dial" id="dial">
+    <svg viewBox="0 0 240 240" aria-hidden="true">
+      <circle class="track" cx="120" cy="120" r="105"/>
+      <circle class="bar" id="bar" cx="120" cy="120" r="105" stroke-dasharray="659.73" stroke-dashoffset="0"/>
+    </svg>
+    <div class="readout">
+      <div class="time" id="time" role="timer" aria-live="off">25:00</div>
+      <div class="label" id="label">집중할 시간이에요</div>
     </div>
-  </section>
+  </div>
 
-  <section>
-    <h2>연락</h2>
-    <div>
-      <p>이메일 <span class="addr">example@email.com</span></p>
-      <p>인스타그램 <span class="addr">@instagram_id</span></p>
+  <div class="controls">
+    <button class="btn" id="reset" type="button">처음으로</button>
+    <button class="btn main" id="toggle" type="button">시작</button>
+    <button class="btn" id="skip" type="button">건너뛰기</button>
+  </div>
+
+  <div class="count">
+    <div class="dots" id="dots" aria-hidden="true"></div>
+    <div id="countText">오늘 집중 0번</div>
+  </div>
+
+  <details>
+    <summary>시간 바꾸기</summary>
+    <div class="settings">
+      <label for="set-focus">집중(분)<input id="set-focus" type="number" inputmode="numeric" min="1" max="120" value="25"></label>
+      <label for="set-short">짧은 휴식(분)<input id="set-short" type="number" inputmode="numeric" min="1" max="60" value="5"></label>
+      <label for="set-long">긴 휴식(분)<input id="set-long" type="number" inputmode="numeric" min="1" max="60" value="15"></label>
     </div>
-  </section>
+    <p class="hint">집중 4번마다 긴 휴식이 나와요. 시간이 끝나면 소리가 나고, 다음 시간은 직접 시작 버튼을 눌러야 시작해요.</p>
+  </details>
 </main>
-<footer>© 2026 고은영</footer>
+
+<script>
+(function () {
+  var KEY = "eunyoung-pomodoro-v1";
+  var C = 2 * Math.PI * 105;
+  var MODES = {
+    focus: { label: "집중할 시간이에요", brk: false },
+    short: { label: "잠깐 쉬어요", brk: true },
+    long:  { label: "길게 쉬어요", brk: true }
+  };
+  var mins = { focus: 25, short: 5, long: 15 };
+  var st = { mode: "focus", remaining: 25 * 60, running: false, endAt: 0, done: 0, day: today() };
+  var timerId = null, audioCtx = null, wakeLock = null;
+
+  var $ = function (id) { return document.getElementById(id); };
+  var el = { time: $("time"), label: $("label"), bar: $("bar"), dial: $("dial"), toggle: $("toggle"),
+             dots: $("dots"), countText: $("countText") };
+
+  function today() { var d = new Date(); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      var s = JSON.parse(raw);
+      ["focus", "short", "long"].forEach(function (k) {
+        var v = Number(s.mins && s.mins[k]);
+        if (v >= 1 && v <= 120) mins[k] = Math.floor(v);
+      });
+      if (s.day === today()) st.done = Number(s.done) || 0;
+    } catch (e) {}
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify({ mins: mins, done: st.done, day: st.day })); } catch (e) {}
+  }
+  function total() { return mins[st.mode] * 60; }
+  function fmt(sec) {
+    var m = Math.floor(sec / 60), s = sec % 60;
+    return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  function render() {
+    el.time.textContent = fmt(st.remaining);
+    el.label.textContent = MODES[st.mode].label;
+    el.bar.style.strokeDashoffset = String(C * (1 - st.remaining / total()));
+    el.dial.classList.toggle("is-break", MODES[st.mode].brk);
+    el.toggle.textContent = st.running ? "일시정지" : (st.remaining < total() ? "계속" : "시작");
+    document.title = (st.running ? fmt(st.remaining) + " · " : "") + "은영 뽀모도로";
+    ["focus", "short", "long"].forEach(function (k) {
+      $("tab-" + k).setAttribute("aria-selected", String(k === st.mode));
+    });
+    var inCycle = st.done % 4;
+    el.dots.innerHTML = "";
+    for (var i = 0; i < 4; i++) {
+      var d = document.createElement("span");
+      d.className = "dot" + (i < inCycle ? " on" : "");
+      el.dots.appendChild(d);
+    }
+    el.countText.textContent = "오늘 집중 " + st.done + "번";
+  }
+
+  function beep() {
+    try {
+      if (!audioCtx) return;
+      var t = audioCtx.currentTime;
+      [0, 0.35, 0.7].forEach(function (off) {
+        var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = "sine"; o.frequency.value = 880;
+        g.gain.setValueAtTime(0.0001, t + off);
+        g.gain.exponentialRampToValueAtTime(0.25, t + off + 0.03);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + off + 0.3);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(t + off); o.stop(t + off + 0.32);
+      });
+    } catch (e) {}
+    try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch (e) {}
+  }
+
+  async function lockScreen() {
+    try { if (navigator.wakeLock) wakeLock = await navigator.wakeLock.request("screen"); } catch (e) {}
+  }
+  function unlockScreen() {
+    try { if (wakeLock) { wakeLock.release(); wakeLock = null; } } catch (e) {}
+  }
+
+  function setMode(m) {
+    stopTimer();
+    st.mode = m; st.remaining = total();
+    render();
+  }
+
+  function nextMode() {
+    if (st.mode === "focus") return (st.done > 0 && st.done % 4 === 0) ? "long" : "short";
+    return "focus";
+  }
+
+  function finish() {
+    stopTimer();
+    beep();
+    if (st.mode === "focus") {
+      if (st.day !== today()) { st.day = today(); st.done = 0; }
+      st.done += 1; save();
+    }
+    st.mode = nextMode(); st.remaining = total();
+    render();
+  }
+
+  function tick() {
+    var left = Math.ceil((st.endAt - Date.now()) / 1000);
+    if (left <= 0) { st.remaining = 0; render(); finish(); return; }
+    if (left !== st.remaining) { st.remaining = left; render(); }
+  }
+
+  function startTimer() {
+    if (!audioCtx) {
+      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+    }
+    if (audioCtx && audioCtx.state === "suspended") { try { audioCtx.resume(); } catch (e) {} }
+    st.running = true;
+    st.endAt = Date.now() + st.remaining * 1000;
+    timerId = setInterval(tick, 250);
+    lockScreen();
+    render();
+  }
+  function stopTimer() {
+    st.running = false;
+    if (timerId) { clearInterval(timerId); timerId = null; }
+    unlockScreen();
+  }
+
+  el.toggle.addEventListener("click", function () {
+    if (st.running) { tick(); stopTimer(); render(); } else { startTimer(); }
+  });
+  $("reset").addEventListener("click", function () { stopTimer(); st.remaining = total(); render(); });
+  $("skip").addEventListener("click", function () {
+    stopTimer();
+    st.mode = nextMode(); st.remaining = total(); render();
+  });
+  document.querySelectorAll(".tab").forEach(function (b) {
+    b.addEventListener("click", function () { setMode(b.getAttribute("data-mode")); });
+  });
+  ["focus", "short", "long"].forEach(function (k) {
+    $("set-" + k).addEventListener("change", function (e) {
+      var v = Math.floor(Number(e.target.value));
+      var max = k === "focus" ? 120 : 60;
+      if (!(v >= 1)) v = mins[k];
+      if (v > max) v = max;
+      e.target.value = v; mins[k] = v; save();
+      if (k === st.mode && !st.running) { st.remaining = total(); }
+      render();
+    });
+  });
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible" && st.running) { tick(); lockScreen(); }
+  });
+
+  load();
+  ["focus", "short", "long"].forEach(function (k) { $("set-" + k).value = mins[k]; });
+  st.remaining = total();
+  render();
+})();
+</script>
 </body>
 </html>
