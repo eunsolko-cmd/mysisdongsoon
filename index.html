@@ -181,7 +181,8 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
       <label for="set-short">짧은 휴식(분)<input id="set-short" type="number" inputmode="numeric" min="1" max="60" value="5"></label>
       <label for="set-long">긴 휴식(분)<input id="set-long" type="number" inputmode="numeric" min="1" max="60" value="15"></label>
     </div>
-    <p class="hint">집중 4번마다 긴 휴식이 나와요. 시간이 끝나면 소리가 나고, 다음 시간은 직접 시작 버튼을 눌러야 시작해요.</p>
+    <label for="set-auto" style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:16px"><input id="set-auto" type="checkbox" style="width:20px;height:20px"> 끝나면 다음 시간 자동으로 시작</label>
+    <p class="hint">집중 4번마다 긴 휴식이 나와요. 시간이 끝나면 소리가 나고, 위 칸을 켜 두면 집중과 휴식이 알아서 이어져요. 끄면 시작 버튼을 눌러야 해요.</p>
   </details>
   </div>
 
@@ -253,9 +254,9 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
   };
   var mins = { focus: 25, short: 5, long: 15 };
   var st = { mode: "focus", remaining: 25 * 60, running: false, endAt: 0, done: 0, day: today() };
-  var timerId = null, audioCtx = null, wakeLock = null;
+  var timerId = null, audioCtx = null, wakeLock = null, auto = true;
 
-  var $ = function (id) { return document.getElementById(id); };
+  var $ =function (id) { return document.getElementById(id); };
   var el = { time: $("time"), label: $("label"), bar: $("bar"), dial: $("dial"), toggle: $("toggle"),
              dots: $("dots"), countText: $("countText") };
 
@@ -270,10 +271,11 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
         if (v >= 1 && v <= 120) mins[k] = Math.floor(v);
       });
       if (s.day === today()) st.done = Number(s.done) || 0;
+      if (s.auto === false) auto = false;
     } catch (e) {}
   }
   function save() {
-    try { localStorage.setItem(KEY, JSON.stringify({ mins: mins, done: st.done, day: st.day })); } catch (e) {}
+    try { localStorage.setItem(KEY, JSON.stringify({ mins: mins, done: st.done, day: st.day, auto: auto })); } catch (e) {}
   }
   function total() { return mins[st.mode] * 60; }
   function fmt(sec) {
@@ -345,6 +347,7 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
     }
     st.mode = nextMode(); st.remaining = total();
     render();
+    if (auto) startTimer();
   }
 
   function tick() {
@@ -392,12 +395,14 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
       render();
     });
   });
+  $("set-auto").addEventListener("change", function (e) { auto = e.target.checked; save(); });
   document.addEventListener("visibilitychange", function () {
     if (document.visibilityState === "visible" && st.running) { tick(); lockScreen(); }
   });
 
   load();
   ["focus", "short", "long"].forEach(function (k) { $("set-" + k).value = mins[k]; });
+  $("set-auto").checked = auto;
   st.remaining = total();
   render();
 })();
