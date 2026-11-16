@@ -270,7 +270,7 @@ details.wmore[open] > summary { margin-bottom: 4px; }
 
       <details>
         <summary>백업하기 · 불러오기</summary>
-        <p class="hint">기도노트는 이 폰의 브라우저에만 저장되고 다른 곳으로 보내지 않아요. 대신 브라우저 기록을 지우거나 폰을 바꾸면 사라지니, 가끔 아래에서 복사해 메모 앱에 보관해 두세요.</p>
+        <p class="hint">기도노트는 이 폰의 브라우저에만 저장되고 다른 곳으로 보내지 않아요. 대신 브라우저 기록을 지우거나 폰을 바꾸면 사라지니, 가끔 아래에서 복사해 메모 앱에 보관해 두세요. 아이폰이라면 사파리 공유 버튼에서 「홈 화면에 추가」를 해 두면 기록이 더 오래 남아요.</p>
         <div class="prow2">
           <button class="btn" id="copyText" type="button">읽기 좋은 글로 복사</button>
           <button class="btn" id="copyCode" type="button">백업 코드 복사</button>
@@ -334,7 +334,7 @@ details.wmore[open] > summary { margin-bottom: 4px; }
       </details>
       <details>
         <summary>백업하기 · 불러오기</summary>
-        <p class="hint">날씨일기는 이 폰의 브라우저에만 저장되고 다른 곳으로 보내지 않아요. 브라우저 기록을 지우거나 폰을 바꾸면 사라지니, 가끔 아래에서 복사해 메모 앱에 보관해 두세요.</p>
+        <p class="hint">날씨일기는 이 폰의 브라우저에만 저장되고 다른 곳으로 보내지 않아요. 브라우저 기록을 지우거나 폰을 바꾸면 사라지니, 가끔 아래에서 복사해 메모 앱에 보관해 두세요. 아이폰이라면 사파리 공유 버튼에서 「홈 화면에 추가」를 해 두면 기록이 더 오래 남아요.</p>
         <div class="prow2">
           <button class="btn" id="wCopy" type="button">백업 코드 복사</button>
           <button class="btn" id="wImport" type="button">불러오기</button>
@@ -838,7 +838,7 @@ details.wmore[open] > summary { margin-bottom: 4px; }
     } catch (e) {}
   }
   function save() {
-    try { localStorage.setItem(NKEY, JSON.stringify(notes)); return true; }
+    try { localStorage.setItem(NKEY, JSON.stringify(notes)); try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e2) {} return true; }
     catch (e) { nmsg("이 브라우저에서는 저장이 안 돼요. 비공개 창이면 일반 창에서 열어 주세요."); return false; }
   }
   function nmsg(t) { $("nMsg").textContent = t; }
@@ -1018,6 +1018,7 @@ details.wmore[open] > summary { margin-bottom: 4px; }
   function load() { try { data = clean(JSON.parse(localStorage.getItem(WKEY) || "{}")); } catch (e) { data = {}; } }
   function save() {
     try { localStorage.setItem(WKEY, JSON.stringify(data)); } catch (e) { msg("저장이 안 됐어요. 브라우저의 사생활 보호 모드가 켜져 있는지 확인해 주세요."); return false; }
+    try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
     try { window.dispatchEvent(new CustomEvent("wx-changed")); } catch (e) {}
     return true;
   }
