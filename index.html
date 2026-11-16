@@ -135,6 +135,20 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
 .wpick button svg { width: 38px; height: 38px; }
 .wpick button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); font-weight: 700; }
 .wx textarea { font: inherit; font-size: 16px; width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); resize: vertical; }
+details.wmore { border-top: 0; padding-top: 0; display: flex; flex-direction: column; gap: 14px; }
+details.wmore > summary { padding: 10px 0; }
+details.wmore[open] > summary { margin-bottom: 4px; }
+.wgrp { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+.wq { margin: 0; font-size: 13px; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: inherit; font-size: 14px; padding: 8px 12px; min-height: 40px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 500; }
+.cal .day.has.w-sun { background: rgba(242,177,52,.20); }
+.cal .day.has.w-pcloud { background: rgba(242,177,52,.11); }
+.cal .day.has.w-cloud { background: rgba(159,176,188,.24); }
+.cal .day.has.w-rain { background: rgba(77,143,214,.20); }
+.cal .day.has.w-storm { background: rgba(111,127,140,.30); }
+.cal .day.has.w-rainbow { background: rgba(229,88,79,.14); }
 .wcare { background: var(--bg); border: 1px solid var(--line); border-left: 4px solid var(--break); border-radius: 10px; padding: 12px 14px; font-size: 15px; line-height: 1.6; }
 .wcare p { margin: 0 0 6px; }
 .wcare p:last-child { margin: 0; }
@@ -284,11 +298,22 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
         <div class="cal" id="wCal"></div>
         <p class="wsel" id="wSel"></p>
         <div class="wpick" id="wPick" role="group" aria-label="날씨 고르기"></div>
-        <label class="sr" for="wMemo">오늘 하늘에 대한 한마디</label>
-        <textarea id="wMemo" rows="3" maxlength="500" placeholder="오늘 하늘에 대한 한마디 (비워 둬도 돼요)"></textarea>
-        <label class="fl" for="wGood">오늘 작게 좋았던 것 하나 (선택)
-          <input id="wGood" type="text" maxlength="120" placeholder="예: 따뜻한 커피, 햇빛, 누가 해 준 인사">
-        </label>
+        <details class="wmore" id="wMore">
+          <summary>더 적고 싶다면 (선택)</summary>
+          <div class="wgrp">
+            <p class="wq">지금 느낌에 가까운 말 (여러 개 골라도 돼요)</p>
+            <div class="chips" id="wFeel"></div>
+          </div>
+          <div class="wgrp">
+            <p class="wq">오늘 한 일</p>
+            <div class="chips" id="wAct"></div>
+          </div>
+          <label class="sr" for="wMemo">오늘 하늘에 대한 한마디</label>
+          <textarea id="wMemo" rows="3" maxlength="500" placeholder="오늘 하늘에 대한 한마디 (비워 둬도 돼요)"></textarea>
+          <label class="fl" for="wGood">오늘 작게 좋았던 것 하나
+            <input id="wGood" type="text" maxlength="120" placeholder="예: 따뜻한 커피, 햇빛, 누가 해 준 인사">
+          </label>
+        </details>
         <div class="nbtns">
           <button class="btn main" type="button" id="wSave">저장하기</button>
           <button class="btn" type="button" id="wDel" hidden>지우기</button>
@@ -968,6 +993,13 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
     return b + '<g fill="none" stroke-width="2.8" stroke-linecap="round"><path d="M4 31a16 16 0 0 1 32 0" stroke="#E5584F"/><path d="M8.5 31a11.5 11.5 0 0 1 23 0" stroke="#F2B134"/><path d="M13 31a7 7 0 0 1 14 0" stroke="#4D8FD6"/></g>' + e;
   }
 
+  var FEELS = ["평온", "감사", "기쁨", "설렘", "뿌듯", "괜찮음", "멍함", "지침", "외로움", "불안", "슬픔", "짜증"];
+  var ACTS = ["기도", "산책", "운동", "사람 만남", "쉼", "좋아하는 일", "일·공부", "잘 먹음", "잘 잠"];
+  function pickList(arr, allowed) {
+    if (!Array.isArray(arr)) return [];
+    return allowed.filter(function (x) { return arr.indexOf(x) >= 0; });
+  }
+  var selF = [], selA = [];
   var data = {}, picked = null, delArmed = false;
   var now = new Date();
   var vy = now.getFullYear(), vm = now.getMonth(), sel = iso(now);
@@ -979,7 +1011,7 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
     if (!o || typeof o !== "object") return out;
     Object.keys(o).forEach(function (d) {
       var v = o[d];
-      if (ISO.test(d) && v && typeof v === "object" && OK[v.w]) out[d] = { w: v.w, t: String(v.t || "").slice(0, 500), g: String(v.g || "").slice(0, 120), ts: Number(v.ts) || 0 };
+      if (ISO.test(d) && v && typeof v === "object" && OK[v.w]) out[d] = { w: v.w, t: String(v.t || "").slice(0, 500), g: String(v.g || "").slice(0, 120), f: pickList(v.f, FEELS), a: pickList(v.a, ACTS), ts: Number(v.ts) || 0 };
     });
     return out;
   }
@@ -1003,6 +1035,22 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
       box.appendChild(b);
     });
   }
+  function buildChips(boxId, list, sel) {
+    var box = $(boxId); box.innerHTML = "";
+    list.forEach(function (name) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "chip"; b.textContent = name; b.setAttribute("aria-pressed", "false");
+      b.addEventListener("click", function () {
+        var arr = sel(), i = arr.indexOf(name);
+        if (i >= 0) arr.splice(i, 1); else arr.push(name);
+        b.setAttribute("aria-pressed", String(i < 0));
+      });
+      box.appendChild(b);
+    });
+  }
+  function paintChips(boxId, arr) {
+    $(boxId).querySelectorAll(".chip").forEach(function (b) { b.setAttribute("aria-pressed", String(arr.indexOf(b.textContent) >= 0)); });
+  }
   function paintPick() {
     $("wPick").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-k") === picked)); });
   }
@@ -1019,7 +1067,7 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
       var ds = vy + "-" + p2(vm + 1) + "-" + p2(n), e = data[ds];
       var b = document.createElement("button");
       b.type = "button";
-      b.className = "day" + (e ? " has" : "") + (ds === today ? " today" : "") + (ds === sel ? " sel" : "");
+      b.className = "day" + (e ? " has w-" + e.w : "") + (ds === today ? " today" : "") + (ds === sel ? " sel" : "");
       b.disabled = ds > today;
       b.setAttribute("aria-label", label(ds) + (e ? " " + OK[e.w] : ""));
       var num = document.createElement("span"); num.textContent = String(n); b.appendChild(num);
@@ -1061,6 +1109,15 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
     });
     var parts = [];
     if (cleared) parts.push("비나 천둥이 친 날 다음 날 하늘이 갠 적이 " + cleared + "번 있어요.");
+    /* 맑은 쪽 날들에 자주 함께한 일: 원인이 아니라 함께 있었던 일로만 말한다 */
+    var GOOD = { sun: 1, pcloud: 1, rainbow: 1 }, gn = 0, ac = {};
+    Object.keys(data).forEach(function (k) {
+      if (!GOOD[data[k].w]) return;
+      gn++; (data[k].a || []).forEach(function (x) { ac[x] = (ac[x] || 0) + 1; });
+    });
+    var best = null;
+    Object.keys(ac).forEach(function (x) { if (ac[x] >= 2 && ac[x] * 5 >= gn * 2 && (!best || ac[x] > ac[best])) best = x; });
+    if (best) parts.push("하늘이 맑았던 날에 가장 자주 함께한 일은 「" + best + "」이에요.");
     if (goods) parts.push("작게 좋았던 것을 " + goods + "개 모았어요.");
     $("wPass").textContent = parts.join(" ");
   }
@@ -1079,6 +1136,9 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
     sel = d; delArmed = false; $("wDel").textContent = "지우기";
     var e = data[d];
     picked = e ? e.w : null; $("wMemo").value = e ? e.t : ""; $("wGood").value = e ? (e.g || "") : "";
+    selF = e ? (e.f || []).slice() : []; selA = e ? (e.a || []).slice() : [];
+    paintChips("wFeel", selF); paintChips("wAct", selA);
+    $("wMore").open = !!(e && (e.t || e.g || selF.length || selA.length));
     $("wSel").textContent = label(d) + "의 하늘";
     $("wSave").textContent = e ? "고치기" : "저장하기";
     $("wDel").hidden = !e;
@@ -1089,7 +1149,7 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
   $("wNext").addEventListener("click", function () { vm++; if (vm > 11) { vm = 0; vy++; } renderCal(); });
   $("wSave").addEventListener("click", function () {
     if (!picked) { msg("오늘의 날씨를 먼저 골라 주세요."); return; }
-    data[sel] = { w: picked, t: $("wMemo").value.slice(0, 500), g: $("wGood").value.slice(0, 120), ts: Date.now() };
+    data[sel] = { w: picked, t: $("wMemo").value.slice(0, 500), g: $("wGood").value.slice(0, 120), f: selF.slice(), a: selA.slice(), ts: Date.now() };
     if (save()) {
       msg(MSG[picked] + (data[sel].g ? " 좋았던 것도 잘 모아 둘게요." : ""));
       $("wSave").textContent = "고치기"; $("wDel").hidden = false; renderCal();
@@ -1098,7 +1158,7 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
   $("wDel").addEventListener("click", function () {
     if (!delArmed) { delArmed = true; $("wDel").textContent = "한 번 더 누르면 지워요"; return; }
     delete data[sel]; delArmed = false; $("wDel").textContent = "지우기";
-    if (save()) { picked = null; $("wMemo").value = ""; $("wGood").value = ""; $("wSave").textContent = "저장하기"; $("wDel").hidden = true; paintPick(); msg("지웠어요."); renderCal(); }
+    if (save()) { picked = null; $("wMemo").value = ""; $("wGood").value = ""; selF = []; selA = []; paintChips("wFeel", selF); paintChips("wAct", selA); $("wSave").textContent = "저장하기"; $("wDel").hidden = true; paintPick(); msg("지웠어요."); renderCal(); }
   });
 
   /* 백업 */
@@ -1117,7 +1177,10 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
     if (save()) { bmsg(n + "일치를 불러왔어요."); $("wBackup").value = ""; selectDay(sel); }
   });
 
-  load(); buildPick(); selectDay(sel);
+  load(); buildPick();
+  buildChips("wFeel", FEELS, function () { return selF; });
+  buildChips("wAct", ACTS, function () { return selA; });
+  selectDay(sel);
 })();
 </script>
 </body>
