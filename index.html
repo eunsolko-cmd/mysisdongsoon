@@ -36,6 +36,13 @@
     --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   }
 }
+.sky { position: absolute; inset: 0; pointer-events: none; }
+.sky span { position: absolute; width: 17%; }
+.sky svg { display: block; width: 100%; height: auto; animation: skybob 3.4s ease-in-out infinite alternate; animation-delay: var(--d, 0s); }
+.sky span.born { animation: skypop 1.1s ease-out; }
+@keyframes skybob { from { transform: translate(-4%, -5%); } to { transform: translate(4%, 5%); } }
+@keyframes skypop { from { opacity: 0; transform: translateY(40%) scale(.6); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .sky svg, .sky span.born { animation: none; } }
 .pet .stage, .wx .nform { background-color: var(--paper); background-image: var(--grain); border-color: var(--paper-line); }
 .wx .wpick button, .wx .chip, .wx textarea, .wx .fl input, .wx .cal-head button { background-color: color-mix(in srgb, var(--surface) 70%, transparent); }
 .wx .chip[aria-pressed="true"] { background-color: var(--accent); }
@@ -196,6 +203,7 @@ details.wmore[open] > summary { margin-bottom: 4px; }
   <section class="pet" aria-label="고은영 아바타">
     <div class="stage">
       <canvas id="pet" width="56" height="40" role="img" aria-label="움직이는 픽셀 아바타 고은영"></canvas>
+      <div class="sky" id="sky" aria-hidden="true"></div>
       <div class="bubble" id="bubble" hidden></div>
     </div>
     <div class="pet-btns">
@@ -685,54 +693,6 @@ details.wmore[open] > summary { margin-bottom: 4px; }
     }
   }
 
-  /* 도화지 하늘: 날씨일기에 고른 날씨가 최근 5개까지 아바타 옆 하늘에 떠다닌다 */
-  var SKYPOS = [[2, 2], [3, 13], [37, 1], [45, 9], [34, 13]];
-  var SKY = {};
-  (function () {
-    var Y = "#F2B134", YL = "#F8D275", CL = "#DDE7EE", CG = "#9FB0BC", CD = "#6F7F8C", BL = "#4D8FD6", BO = "#F2C21B";
-    var cloud = function (c, ox, oy) { return [[3,0,3,1,c],[2,1,6,1,c],[1,2,8,1,c],[0,3,10,2,c],[1,5,8,1,c]].map(function (r) { return [r[0]+ox, r[1]+oy, r[2], r[3], r[4]]; }); };
-    SKY.sun = { w: 8, r: [[2,2,4,4,Y],[3,0,2,1,Y],[3,7,2,1,Y],[0,3,1,2,Y],[7,3,1,2,Y],[1,1,1,1,YL],[6,1,1,1,YL],[1,6,1,1,YL],[6,6,1,1,YL]] };
-    SKY.pcloud = { w: 12, r: [[1,0,3,3,Y],[0,1,1,1,Y],[4,1,1,1,Y],[2,3,1,1,Y]].concat(cloud(CL, 2, 2)) };
-    SKY.cloud = { w: 10, r: cloud(CG, 0, 0) };
-    SKY.rain = { w: 10, r: cloud(CG, 0, 0), drops: [[2, BL], [5, BL], [8, BL]] };
-    SKY.storm = { w: 10, r: cloud(CD, 0, 0).concat([[5,5,1,1,BO],[4,6,2,1,BO],[5,7,1,1,BO]]) };
-    var rb = [], cols = ["#E5584F", "#F2B134", "#5BB06A", BL];
-    for (var rad = 0; rad < 4; rad++) for (var yy = 0; yy < 6; yy++) for (var xx = 0; xx < 11; xx++) {
-      var d = Math.sqrt((xx - 5) * (xx - 5) + (yy - 5) * (yy - 5));
-      if (Math.abs(d - (5 - rad)) < 0.55 + (rad === 0 ? 0.15 : 0) && yy <= 5) rb.push([xx, yy, 1, 1, cols[rad]]);
-    }
-    SKY.rainbow = { w: 11, r: rb };
-  })();
-  var skyList = [], skyBorn = {};
-  var KINDS_NAME = { sun: "맑음", pcloud: "구름조금", cloud: "흐림", rain: "비", storm: "천둥", rainbow: "무지개" };
-  function loadSky(isNew) {
-    var d = {};
-    try { d = JSON.parse(localStorage.getItem("eunyoung-weather-v1") || "{}") || {}; } catch (e) {}
-    var keys = Object.keys(d).filter(function (k) { return /^\d{4}-\d{2}-\d{2}$/.test(k) && d[k] && SKY[d[k].w]; }).sort().slice(-5);
-    var prev = {}; skyList.forEach(function (s) { prev[s.date + s.w] = true; });
-    skyList = keys.map(function (k) { return { date: k, w: d[k].w }; });
-    skyList.forEach(function (s) { if (isNew && !prev[s.date + s.w]) skyBorn[s.date] = performance.now(); });
-    var hint = document.getElementById("skyHint");
-    hint.textContent = skyList.length ? "하늘에 떠 있는 건 은영님이 날씨일기에 고른 날씨예요." : "";
-  }
-  function drawSky(now) {
-    skyList.forEach(function (s, i) {
-      var sp = SKY[s.w], pos = SKYPOS[i % SKYPOS.length];
-      var bob = reduce ? 0 : Math.round(Math.sin(now / 900 + i * 1.7));
-      var drift = reduce ? 0 : Math.round(Math.sin(now / 2600 + i * 2.3));
-      var x = Math.min(pos[0] + drift, W - sp.w), y = pos[1] + bob;
-      var born = skyBorn[s.date], a = 1;
-      if (born) {
-        var t = (now - born) / 1000;
-        if (t >= 1.2) delete skyBorn[s.date]; else { a = Math.min(1, t / 0.9); y += Math.round((1 - a) * 6); }
-      }
-      g.globalAlpha = a;
-      sp.r.forEach(function (r) { rect(x + r[0], y + r[1], r[2], r[3], r[4]); });
-      if (sp.drops) sp.drops.forEach(function (dr, j) { rect(x + dr[0], y + 6 + ((Math.floor(now / 220) + j) % 2), 1, 2, dr[1]); });
-      g.globalAlpha = 1;
-    });
-  }
-  window.addEventListener("wx-changed", function () { loadSky(true); });
 
   function frame(now) {
     var dt = lastFrame ? Math.min(0.05, (now - lastFrame) / 1000) : 0.016;
@@ -773,7 +733,6 @@ details.wmore[open] > summary { margin-bottom: 4px; }
 
     cx = Math.round(cx);
     g.clearRect(0, 0, cv.width, cv.height);
-    drawSky(now);
     rect(0, GROUND, W, 2, "rgba(128,128,128,.18)");
     if (obj) drawObj(obj);
     avatar(cx, dy, face, arms, blink, now);
@@ -801,7 +760,7 @@ details.wmore[open] > summary { margin-bottom: 4px; }
     soundOn = !soundOn; save(); renderUi();
   });
 
-  load(); renderUi(); loadSky(false);
+  load(); renderUi();
   requestAnimationFrame(frame);
 })();
 </script>
@@ -1041,8 +1000,25 @@ details.wmore[open] > summary { margin-bottom: 4px; }
   function save() {
     try { localStorage.setItem(WKEY, JSON.stringify(data)); } catch (e) { msg("저장이 안 됐어요. 브라우저의 사생활 보호 모드가 켜져 있는지 확인해 주세요."); return false; }
     try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
-    try { window.dispatchEvent(new CustomEvent("wx-changed")); } catch (e) {}
+    renderSky(true);
     return true;
+  }
+  /* 도화지 하늘: 최근에 고른 날씨 5개를 크레파스 그림으로 키우기 화면 하늘에 띄운다 */
+  var SKYPOS = [[2, 2], [3, 13], [37, 1], [45, 9], [34, 13]], shown = {};
+  function renderSky(isNew) {
+    var box = $("sky"), keys = Object.keys(data).sort().slice(-5), now = {};
+    box.innerHTML = "";
+    keys.forEach(function (k, i) {
+      var pos = SKYPOS[i], sp = document.createElement("span"), id = k + data[k].w;
+      now[id] = true;
+      sp.style.left = (pos[0] / 56 * 100) + "%"; sp.style.top = (pos[1] / 40 * 100) + "%";
+      sp.style.setProperty("--d", (i * -0.9) + "s");
+      if (isNew && !shown[id]) sp.className = "born";
+      sp.innerHTML = icon(data[k].w);
+      box.appendChild(sp);
+    });
+    shown = now;
+    $("skyHint").textContent = keys.length ? "하늘에 떠 있는 건 은영님이 날씨일기에 고른 날씨예요." : "";
   }
   function msg(t) { $("wMsg").textContent = t; }
   function label(d) { var p = d.split("-"); return Number(p[1]) + "월 " + Number(p[2]) + "일"; }
@@ -1200,7 +1176,7 @@ details.wmore[open] > summary { margin-bottom: 4px; }
     if (save()) { bmsg(n + "일치를 불러왔어요."); $("wBackup").value = ""; selectDay(sel); }
   });
 
-  load(); buildPick();
+  load(); buildPick(); renderSky(false);
   buildChips("wFeel", FEELS, function () { return selF; });
   buildChips("wAct", ACTS, function () { return selA; });
   selectDay(sel);
