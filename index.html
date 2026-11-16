@@ -82,8 +82,8 @@ summary { cursor: pointer; color: var(--muted); font-size: 15px; }
 .pet-btns .btn.happy { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .sound { font: inherit; font-size: 13px; color: var(--muted); background: none; border: 0; text-decoration: underline; cursor: pointer; padding: 4px; }
 h2.sec { font-family: var(--font-display); font-size: 20px; margin: 8px 0 -8px; padding-top: 24px; border-top: 1px solid var(--line); text-align: center; }
-.views { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
-.vtab, .ftab { font: inherit; font-size: 15px; padding: 10px 4px; border: 0; background: transparent; color: var(--muted); border-radius: 7px; cursor: pointer; }
+.views { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.vtab, .ftab { font: inherit; font-size: 14px; white-space: nowrap; padding: 10px 2px; border: 0; background: transparent; color: var(--muted); border-radius: 7px; cursor: pointer; }
 .vtab[aria-selected="true"], .ftab[aria-selected="true"] { background: var(--accent); color: var(--on-accent); font-weight: 500; }
 .view { display: flex; flex-direction: column; gap: 28px; }
 .view[hidden] { display: none; }
@@ -116,6 +116,33 @@ h2.sec { font-family: var(--font-display); font-size: 20px; margin: 8px 0 -8px; 
 .prow2 .btn, #doImport { font-size: 14px; padding: 12px 6px; }
 label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--muted); }
 #doImport { margin-top: 8px; width: 100%; }
+.wx { display: flex; flex-direction: column; gap: 20px; }
+.cal-head { display: flex; align-items: center; justify-content: space-between; }
+.cal-head b { font-family: var(--font-display); font-size: 18px; }
+.cal-head button { font: inherit; font-size: 22px; width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--line); background: transparent; color: var(--fg); cursor: pointer; }
+.cal-head button:disabled { opacity: .35; cursor: default; }
+.cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal .dow { text-align: center; font-size: 12px; color: var(--muted); padding: 2px 0; }
+.cal .day { font: inherit; font-size: 12px; color: var(--muted); aspect-ratio: 1 / 1.1; min-width: 0; padding: 2px 0 0; border-radius: 8px; border: 1px solid transparent; background: transparent; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 0; }
+.cal .day svg { width: 78%; height: auto; }
+.cal .day.has { background: var(--bg); }
+.cal .day.today { border-color: var(--line); }
+.cal .day.sel { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); color: var(--fg); font-weight: 700; }
+.cal .day:disabled { opacity: .3; cursor: default; }
+.wsel { margin: 0; font-family: var(--font-display); font-size: 17px; }
+.wpick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.wpick button { font: inherit; font-size: 14px; color: var(--fg); min-height: 76px; padding: 6px 4px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.wpick button svg { width: 38px; height: 38px; }
+.wpick button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); font-weight: 700; }
+.wx textarea { font: inherit; font-size: 16px; width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); resize: vertical; }
+.wcare { background: var(--bg); border: 1px solid var(--line); border-left: 4px solid var(--break); border-radius: 10px; padding: 12px 14px; font-size: 15px; line-height: 1.6; }
+.wcare p { margin: 0 0 6px; }
+.wcare p:last-child { margin: 0; }
+.wcall { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 15px; }
+.wcall b { display: block; }
+.wstat { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 14px; color: var(--muted); }
+.wstat span { display: inline-flex; align-items: center; gap: 4px; }
+.wstat svg { width: 22px; height: 22px; }
 @media (prefers-reduced-motion: reduce) { .bar { transition: none; } .bubble { animation: none; } }
 </style>
 </head>
@@ -127,6 +154,7 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
     <button class="vtab" role="tab" data-view="pet" aria-selected="true">키우기</button>
     <button class="vtab" role="tab" data-view="timer" aria-selected="false">뽀모도로</button>
     <button class="vtab" role="tab" data-view="prayer" aria-selected="false">기도노트</button>
+    <button class="vtab" role="tab" data-view="weather" aria-selected="false">날씨일기</button>
   </nav>
 
   <div class="view" id="view-pet">
@@ -140,6 +168,7 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
       <button class="btn happy" id="btnHappy" type="button">행복할 때<small id="cntHappy">오늘 0번</small></button>
     </div>
     <button class="sound" id="soundBtn" type="button" aria-pressed="true">소리 켜짐</button>
+    <p class="hint" id="skyHint" style="margin:0;text-align:center"></p>
   </section>
 
   </div>
@@ -238,6 +267,56 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
         <textarea id="backupIn" rows="3" placeholder="복사해 둔 백업 코드를 여기에 붙여넣으세요"></textarea>
         <button class="btn" id="doImport" type="button">불러오기</button>
         <p class="hint" id="pMsg" role="status" aria-live="polite"></p>
+      </details>
+    </section>
+  </div>
+
+  <div class="view" id="view-weather" hidden>
+    <section class="wx" aria-label="동순날씨일기">
+      <div class="nform">
+        <h2 class="nh">동순날씨일기</h2>
+        <p class="bh">오늘 나의 하늘은 어떤가요? 날씨를 하나 고르고, 하고 싶은 말은 한 줄만 남겨도 돼요. 날마다 달라도 괜찮아요.</p>
+        <div class="cal-head">
+          <button type="button" id="wPrev" aria-label="이전 달">&lsaquo;</button>
+          <b id="wMonth" aria-live="polite"></b>
+          <button type="button" id="wNext" aria-label="다음 달">&rsaquo;</button>
+        </div>
+        <div class="cal" id="wCal"></div>
+        <p class="wsel" id="wSel"></p>
+        <div class="wpick" id="wPick" role="group" aria-label="날씨 고르기"></div>
+        <label class="sr" for="wMemo">오늘 하늘에 대한 한마디</label>
+        <textarea id="wMemo" rows="3" maxlength="500" placeholder="오늘 하늘에 대한 한마디 (비워 둬도 돼요)"></textarea>
+        <label class="fl" for="wGood">오늘 작게 좋았던 것 하나 (선택)
+          <input id="wGood" type="text" maxlength="120" placeholder="예: 따뜻한 커피, 햇빛, 누가 해 준 인사">
+        </label>
+        <div class="nbtns">
+          <button class="btn main" type="button" id="wSave">저장하기</button>
+          <button class="btn" type="button" id="wDel" hidden>지우기</button>
+        </div>
+        <p class="hint" id="wMsg" role="status" aria-live="polite"></p>
+        <div class="wcare" id="wCare" hidden></div>
+      </div>
+      <div class="wstat" id="wStat" aria-label="이번 달 날씨 모아보기"></div>
+      <p class="hint" id="wPass"></p>
+      <details>
+        <summary>마음이 많이 무거울 때</summary>
+        <p class="hint">혼자 견디지 않아도 돼요. 이 일기는 기록하는 도구이고, 치료를 대신하지는 못해요. 힘든 날이 길어지면 믿는 사람에게 이 달력을 보여 주며 이야기해 보세요. 아래 번호는 24시간 무료로 받을 수 있어요.</p>
+        <ul class="wcall">
+          <li><b>자살예방 상담전화 109</b> 24시간, 무료</li>
+          <li><b>정신건강 위기상담전화 1577-0199</b> 24시간, 무료</li>
+          <li><b>119</b> 몸이 위험한 순간에는 바로 전화해요</li>
+        </ul>
+      </details>
+      <details>
+        <summary>백업하기 · 불러오기</summary>
+        <p class="hint">날씨일기는 이 폰의 브라우저에만 저장되고 다른 곳으로 보내지 않아요. 브라우저 기록을 지우거나 폰을 바꾸면 사라지니, 가끔 아래에서 복사해 메모 앱에 보관해 두세요.</p>
+        <div class="prow2">
+          <button class="btn" id="wCopy" type="button">백업 코드 복사</button>
+          <button class="btn" id="wImport" type="button">불러오기</button>
+        </div>
+        <label class="small" for="wBackup">백업 코드를 붙여넣어 불러오기</label>
+        <textarea id="wBackup" rows="3" placeholder="복사해 둔 백업 코드를 여기에 붙여넣으세요"></textarea>
+        <p class="hint" id="wBMsg" role="status" aria-live="polite"></p>
       </details>
     </section>
   </div>
@@ -560,6 +639,55 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
     }
   }
 
+  /* 도화지 하늘: 날씨일기에 고른 날씨가 최근 5개까지 아바타 옆 하늘에 떠다닌다 */
+  var SKYPOS = [[2, 2], [3, 13], [37, 1], [45, 9], [34, 13]];
+  var SKY = {};
+  (function () {
+    var Y = "#F2B134", YL = "#F8D275", CL = "#DDE7EE", CG = "#9FB0BC", CD = "#6F7F8C", BL = "#4D8FD6", BO = "#F2C21B";
+    var cloud = function (c, ox, oy) { return [[3,0,3,1,c],[2,1,6,1,c],[1,2,8,1,c],[0,3,10,2,c],[1,5,8,1,c]].map(function (r) { return [r[0]+ox, r[1]+oy, r[2], r[3], r[4]]; }); };
+    SKY.sun = { w: 8, r: [[2,2,4,4,Y],[3,0,2,1,Y],[3,7,2,1,Y],[0,3,1,2,Y],[7,3,1,2,Y],[1,1,1,1,YL],[6,1,1,1,YL],[1,6,1,1,YL],[6,6,1,1,YL]] };
+    SKY.pcloud = { w: 12, r: [[1,0,3,3,Y],[0,1,1,1,Y],[4,1,1,1,Y],[2,3,1,1,Y]].concat(cloud(CL, 2, 2)) };
+    SKY.cloud = { w: 10, r: cloud(CG, 0, 0) };
+    SKY.rain = { w: 10, r: cloud(CG, 0, 0), drops: [[2, BL], [5, BL], [8, BL]] };
+    SKY.storm = { w: 10, r: cloud(CD, 0, 0).concat([[5,5,1,1,BO],[4,6,2,1,BO],[5,7,1,1,BO]]) };
+    var rb = [], cols = ["#E5584F", "#F2B134", "#5BB06A", BL];
+    for (var rad = 0; rad < 4; rad++) for (var yy = 0; yy < 6; yy++) for (var xx = 0; xx < 11; xx++) {
+      var d = Math.sqrt((xx - 5) * (xx - 5) + (yy - 5) * (yy - 5));
+      if (Math.abs(d - (5 - rad)) < 0.55 + (rad === 0 ? 0.15 : 0) && yy <= 5) rb.push([xx, yy, 1, 1, cols[rad]]);
+    }
+    SKY.rainbow = { w: 11, r: rb };
+  })();
+  var skyList = [], skyBorn = {};
+  var KINDS_NAME = { sun: "맑음", pcloud: "구름조금", cloud: "흐림", rain: "비", storm: "천둥", rainbow: "무지개" };
+  function loadSky(isNew) {
+    var d = {};
+    try { d = JSON.parse(localStorage.getItem("eunyoung-weather-v1") || "{}") || {}; } catch (e) {}
+    var keys = Object.keys(d).filter(function (k) { return /^\d{4}-\d{2}-\d{2}$/.test(k) && d[k] && SKY[d[k].w]; }).sort().slice(-5);
+    var prev = {}; skyList.forEach(function (s) { prev[s.date + s.w] = true; });
+    skyList = keys.map(function (k) { return { date: k, w: d[k].w }; });
+    skyList.forEach(function (s) { if (isNew && !prev[s.date + s.w]) skyBorn[s.date] = performance.now(); });
+    var hint = document.getElementById("skyHint");
+    hint.textContent = skyList.length ? "하늘에 떠 있는 건 은영님이 날씨일기에 고른 날씨예요." : "";
+  }
+  function drawSky(now) {
+    skyList.forEach(function (s, i) {
+      var sp = SKY[s.w], pos = SKYPOS[i % SKYPOS.length];
+      var bob = reduce ? 0 : Math.round(Math.sin(now / 900 + i * 1.7));
+      var drift = reduce ? 0 : Math.round(Math.sin(now / 2600 + i * 2.3));
+      var x = Math.min(pos[0] + drift, W - sp.w), y = pos[1] + bob;
+      var born = skyBorn[s.date], a = 1;
+      if (born) {
+        var t = (now - born) / 1000;
+        if (t >= 1.2) delete skyBorn[s.date]; else { a = Math.min(1, t / 0.9); y += Math.round((1 - a) * 6); }
+      }
+      g.globalAlpha = a;
+      sp.r.forEach(function (r) { rect(x + r[0], y + r[1], r[2], r[3], r[4]); });
+      if (sp.drops) sp.drops.forEach(function (dr, j) { rect(x + dr[0], y + 6 + ((Math.floor(now / 220) + j) % 2), 1, 2, dr[1]); });
+      g.globalAlpha = 1;
+    });
+  }
+  window.addEventListener("wx-changed", function () { loadSky(true); });
+
   function frame(now) {
     var dt = lastFrame ? Math.min(0.05, (now - lastFrame) / 1000) : 0.016;
     lastFrame = now;
@@ -599,6 +727,7 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
 
     cx = Math.round(cx);
     g.clearRect(0, 0, cv.width, cv.height);
+    drawSky(now);
     rect(0, GROUND, W, 2, "rgba(128,128,128,.18)");
     if (obj) drawObj(obj);
     avatar(cx, dy, face, arms, blink, now);
@@ -626,7 +755,7 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
     soundOn = !soundOn; save(); renderUi();
   });
 
-  load(); renderUi();
+  load(); renderUi(); loadSky(false);
   requestAnimationFrame(frame);
 })();
 </script>
@@ -638,7 +767,7 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
 
   /* 화면 고르기 */
   function showView(v) {
-    ["pet", "timer", "prayer"].forEach(function (k) { $("view-" + k).hidden = (k !== v); });
+    ["pet", "timer", "prayer", "weather"].forEach(function (k) { $("view-" + k).hidden = (k !== v); });
     document.querySelectorAll(".vtab").forEach(function (b) { b.setAttribute("aria-selected", String(b.getAttribute("data-view") === v)); });
     try { localStorage.setItem(VKEY, v); } catch (e) {}
   }
@@ -646,7 +775,7 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
     b.addEventListener("click", function () { showView(b.getAttribute("data-view")); });
   });
   var firstView = "pet";
-  try { var sv = localStorage.getItem(VKEY); if (sv === "pet" || sv === "timer" || sv === "prayer") firstView = sv; } catch (e) {}
+  try { var sv = localStorage.getItem(VKEY); if (sv === "pet" || sv === "timer" || sv === "prayer" || sv === "weather") firstView = sv; } catch (e) {}
   showView(firstView);
 
   /* 기도노트: SOAP 양식 (성경, 관찰, 적용, 기도) */
@@ -803,6 +932,192 @@ label.small { display: block; margin-top: 12px; font-size: 13px; color: var(--mu
   load();
   try { var dr = JSON.parse(localStorage.getItem(DKEY) || "null"); if (dr && typeof dr === "object") fillForm(dr); else fillForm({}); } catch (e) { fillForm({}); }
   render();
+})();
+</script>
+<script>
+/* 동순날씨일기: 날짜마다 날씨 하나 + 한 줄. 이 브라우저의 localStorage 에만 저장하고 어디에도 보내지 않는다 */
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var WKEY = "eunyoung-weather-v1";
+  var KINDS = [["sun", "맑음"], ["pcloud", "구름조금"], ["cloud", "흐림"], ["rain", "비"], ["storm", "천둥"], ["rainbow", "무지개"]];
+  var OK = {}; KINDS.forEach(function (k) { OK[k[0]] = k[1]; });
+  var MSG = {
+    sun: "맑은 하루였군요. 기록해 두었어요.",
+    pcloud: "구름 사이로 해가 보이는 날이네요.",
+    cloud: "흐린 날도 지나가요. 기록해 두었어요.",
+    rain: "비 오는 날도 기록해 줬네요. 비는 그치기 마련이에요.",
+    storm: "천둥 치는 날이었군요. 여기에 털어놓고 가요.",
+    rainbow: "무지개가 떴네요!"
+  };
+  var CLOUD = "M11 30a6 6 0 0 1-.5-12A9 9 0 0 1 28 16.5 6.8 6.8 0 0 1 29 30z";
+  function rays(cx, cy, r1, r2, col) {
+    var s = "";
+    for (var i = 0; i < 8; i++) {
+      var a = i * Math.PI / 4, c = Math.cos(a), n = Math.sin(a);
+      s += '<line x1="' + (cx + c * r1).toFixed(1) + '" y1="' + (cy + n * r1).toFixed(1) + '" x2="' + (cx + c * r2).toFixed(1) + '" y2="' + (cy + n * r2).toFixed(1) + '" stroke="' + col + '" stroke-width="2.4" stroke-linecap="round"/>';
+    }
+    return s;
+  }
+  function icon(k) {
+    var b = '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false">', e = "</svg>";
+    if (k === "sun") return b + '<circle cx="20" cy="20" r="7" fill="#F2B134"/>' + rays(20, 20, 11, 15, "#F2B134") + e;
+    if (k === "pcloud") return b + '<circle cx="15" cy="14" r="6" fill="#F2B134"/>' + rays(15, 14, 9, 12, "#F2B134") + '<path d="' + CLOUD + '" transform="translate(4 3)" fill="#D5E0E7" stroke="#8FA3B1" stroke-width="1.3"/>' + e;
+    if (k === "cloud") return b + '<path d="' + CLOUD + '" fill="#9FB0BC"/>' + e;
+    if (k === "rain") return b + '<path d="' + CLOUD + '" transform="translate(0 -5)" fill="#9FB0BC"/>' + '<g stroke="#4D8FD6" stroke-width="2.6" stroke-linecap="round"><line x1="14" y1="30" x2="12" y2="36"/><line x1="21" y1="30" x2="19" y2="36"/><line x1="28" y1="30" x2="26" y2="36"/></g>' + e;
+    if (k === "storm") return b + '<path d="' + CLOUD + '" transform="translate(0 -5)" fill="#6F7F8C"/>' + '<polygon points="21,22 15,32 20,32 18,39 27,27 22,27 25,22" fill="#F2C21B"/>' + e;
+    return b + '<g fill="none" stroke-width="2.8" stroke-linecap="round"><path d="M4 31a16 16 0 0 1 32 0" stroke="#E5584F"/><path d="M8.5 31a11.5 11.5 0 0 1 23 0" stroke="#F2B134"/><path d="M13 31a7 7 0 0 1 14 0" stroke="#4D8FD6"/></g>' + e;
+  }
+
+  var data = {}, picked = null, delArmed = false;
+  var now = new Date();
+  var vy = now.getFullYear(), vm = now.getMonth(), sel = iso(now);
+  function p2(n) { return ("0" + n).slice(-2); }
+  function iso(d) { return d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate()); }
+  var ISO = /^\d{4}-\d{2}-\d{2}$/;
+  function clean(o) {
+    var out = {};
+    if (!o || typeof o !== "object") return out;
+    Object.keys(o).forEach(function (d) {
+      var v = o[d];
+      if (ISO.test(d) && v && typeof v === "object" && OK[v.w]) out[d] = { w: v.w, t: String(v.t || "").slice(0, 500), g: String(v.g || "").slice(0, 120), ts: Number(v.ts) || 0 };
+    });
+    return out;
+  }
+  function load() { try { data = clean(JSON.parse(localStorage.getItem(WKEY) || "{}")); } catch (e) { data = {}; } }
+  function save() {
+    try { localStorage.setItem(WKEY, JSON.stringify(data)); } catch (e) { msg("저장이 안 됐어요. 브라우저의 사생활 보호 모드가 켜져 있는지 확인해 주세요."); return false; }
+    try { window.dispatchEvent(new CustomEvent("wx-changed")); } catch (e) {}
+    return true;
+  }
+  function msg(t) { $("wMsg").textContent = t; }
+  function label(d) { var p = d.split("-"); return Number(p[1]) + "월 " + Number(p[2]) + "일"; }
+
+  function buildPick() {
+    var box = $("wPick"); box.innerHTML = "";
+    KINDS.forEach(function (k) {
+      var b = document.createElement("button");
+      b.type = "button"; b.setAttribute("data-k", k[0]);
+      b.innerHTML = icon(k[0]);
+      var s = document.createElement("span"); s.textContent = k[1]; b.appendChild(s);
+      b.addEventListener("click", function () { picked = k[0]; paintPick(); });
+      box.appendChild(b);
+    });
+  }
+  function paintPick() {
+    $("wPick").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-k") === picked)); });
+  }
+
+  function renderCal() {
+    $("wMonth").textContent = vy + "년 " + (vm + 1) + "월";
+    var cal = $("wCal"); cal.innerHTML = "";
+    ["일", "월", "화", "수", "목", "금", "토"].forEach(function (n) {
+      var d = document.createElement("div"); d.className = "dow"; d.textContent = n; cal.appendChild(d);
+    });
+    var first = new Date(vy, vm, 1).getDay(), last = new Date(vy, vm + 1, 0).getDate(), today = iso(new Date());
+    for (var i = 0; i < first; i++) cal.appendChild(document.createElement("div"));
+    for (var n = 1; n <= last; n++) {
+      var ds = vy + "-" + p2(vm + 1) + "-" + p2(n), e = data[ds];
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "day" + (e ? " has" : "") + (ds === today ? " today" : "") + (ds === sel ? " sel" : "");
+      b.disabled = ds > today;
+      b.setAttribute("aria-label", label(ds) + (e ? " " + OK[e.w] : ""));
+      var num = document.createElement("span"); num.textContent = String(n); b.appendChild(num);
+      if (e) b.insertAdjacentHTML("beforeend", icon(e.w));
+      (function (d) { b.addEventListener("click", function () { selectDay(d); }); })(ds);
+      cal.appendChild(b);
+    }
+    var cur = new Date();
+    $("wNext").disabled = (vy > cur.getFullYear()) || (vy === cur.getFullYear() && vm >= cur.getMonth());
+    renderStat(); renderCare();
+  }
+  var HARD = { rain: 1, storm: 1 };
+  function nextIso(d) { var p = d.split("-"); return iso(new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]) + 1)); }
+  function renderCare() {
+    /* 점수나 연속 기록으로 칭찬도 꾸지람도 하지 않는다. 비·천둥 날이 사흘 이어졌을 때만 조용히 안부를 건넨다 */
+    var keys = Object.keys(data).sort(), care = $("wCare"), show = false;
+    if (keys.length) {
+      var lastD = keys[keys.length - 1], t = new Date(), td = iso(t), yd = iso(new Date(t.getFullYear(), t.getMonth(), t.getDate() - 1));
+      if (lastD === td || lastD === yd) {
+        var run = 0, d = lastD;
+        while (data[d] && HARD[data[d].w]) { run++; var p = d.split("-"); d = iso(new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]) - 1)); }
+        show = run >= 3;
+      }
+    }
+    care.hidden = !show;
+    if (show) {
+      care.innerHTML = "";
+      ["요즘 비 오는 날이 이어지고 있네요. 기록해 줘서 고마워요.",
+       "이런 날이 이어질 때는 믿는 사람에게 오늘 하늘 이야기를 한 줄이라도 전해 보면 좋아요. 기도노트에 적어도 좋고요.",
+       "너무 무겁게 느껴지면 아래 「마음이 많이 무거울 때」에 있는 번호로 언제든 전화해도 돼요."].forEach(function (s) {
+        var p = document.createElement("p"); p.textContent = s; care.appendChild(p);
+      });
+    }
+    /* 지나간 비: 기록에 실제로 있는 사실만 보여 준다 */
+    var cleared = 0, goods = 0;
+    Object.keys(data).forEach(function (k) {
+      if (data[k].g) goods++;
+      if (HARD[data[k].w]) { var n = data[nextIso(k)]; if (n && !HARD[n.w]) cleared++; }
+    });
+    var parts = [];
+    if (cleared) parts.push("비나 천둥이 친 날 다음 날 하늘이 갠 적이 " + cleared + "번 있어요.");
+    if (goods) parts.push("작게 좋았던 것을 " + goods + "개 모았어요.");
+    $("wPass").textContent = parts.join(" ");
+  }
+  function renderStat() {
+    var box = $("wStat"); box.innerHTML = "";
+    var cnt = {}, total = 0, pre = vy + "-" + p2(vm + 1) + "-";
+    Object.keys(data).forEach(function (d) { if (d.indexOf(pre) === 0) { cnt[data[d].w] = (cnt[data[d].w] || 0) + 1; total++; } });
+    if (!total) { box.textContent = "이 달에 남긴 날씨가 아직 없어요."; return; }
+    KINDS.forEach(function (k) {
+      if (!cnt[k[0]]) return;
+      var s = document.createElement("span"); s.innerHTML = icon(k[0]);
+      s.appendChild(document.createTextNode(k[1] + " " + cnt[k[0]] + "일")); box.appendChild(s);
+    });
+  }
+  function selectDay(d) {
+    sel = d; delArmed = false; $("wDel").textContent = "지우기";
+    var e = data[d];
+    picked = e ? e.w : null; $("wMemo").value = e ? e.t : ""; $("wGood").value = e ? (e.g || "") : "";
+    $("wSel").textContent = label(d) + "의 하늘";
+    $("wSave").textContent = e ? "고치기" : "저장하기";
+    $("wDel").hidden = !e;
+    paintPick(); msg(""); renderCal();
+  }
+
+  $("wPrev").addEventListener("click", function () { vm--; if (vm < 0) { vm = 11; vy--; } renderCal(); });
+  $("wNext").addEventListener("click", function () { vm++; if (vm > 11) { vm = 0; vy++; } renderCal(); });
+  $("wSave").addEventListener("click", function () {
+    if (!picked) { msg("오늘의 날씨를 먼저 골라 주세요."); return; }
+    data[sel] = { w: picked, t: $("wMemo").value.slice(0, 500), g: $("wGood").value.slice(0, 120), ts: Date.now() };
+    if (save()) {
+      msg(MSG[picked] + (data[sel].g ? " 좋았던 것도 잘 모아 둘게요." : ""));
+      $("wSave").textContent = "고치기"; $("wDel").hidden = false; renderCal();
+    }
+  });
+  $("wDel").addEventListener("click", function () {
+    if (!delArmed) { delArmed = true; $("wDel").textContent = "한 번 더 누르면 지워요"; return; }
+    delete data[sel]; delArmed = false; $("wDel").textContent = "지우기";
+    if (save()) { picked = null; $("wMemo").value = ""; $("wGood").value = ""; $("wSave").textContent = "저장하기"; $("wDel").hidden = true; paintPick(); msg("지웠어요."); renderCal(); }
+  });
+
+  /* 백업 */
+  function bmsg(t) { $("wBMsg").textContent = t; }
+  $("wCopy").addEventListener("click", function () {
+    var text = JSON.stringify(data), ta = $("wBackup");
+    ta.value = text; ta.focus(); ta.select();
+    var fb = function () { var ok = false; try { ok = document.execCommand("copy"); } catch (e) {} bmsg(ok ? "백업 코드를 복사했어요. 메모 앱에 붙여넣어 보관하세요." : "복사가 안 되면 위 글을 길게 눌러 직접 복사해 주세요."); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { bmsg("백업 코드를 복사했어요. 메모 앱에 붙여넣어 보관하세요."); }, fb); else fb();
+  });
+  $("wImport").addEventListener("click", function () {
+    var inc;
+    try { inc = clean(JSON.parse($("wBackup").value)); } catch (e) { bmsg("백업 코드를 읽지 못했어요. 복사한 내용 전체를 붙여넣었는지 확인해 주세요."); return; }
+    var n = 0;
+    Object.keys(inc).forEach(function (d) { if (!data[d] || inc[d].ts > data[d].ts) { data[d] = inc[d]; n++; } });
+    if (save()) { bmsg(n + "일치를 불러왔어요."); $("wBackup").value = ""; selectDay(sel); }
+  });
+
+  load(); buildPick(); selectDay(sel);
 })();
 </script>
 </body>
