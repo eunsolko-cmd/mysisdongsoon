@@ -19,17 +19,27 @@
   --break: #5A7FA8;
   --font-display: "Gowun Batang", serif;
   --font-body: "Noto Sans KR", system-ui, sans-serif;
+  --paper: #FBF6E9; --paper-line: #E6DCC3;
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .55 0 0 0 0 .45 0 0 0 0 .30 0 0 0 .11 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 :root.dark-forced, :root[data-theme="dark"] {
   --bg: #11181E; --surface: #18222A; --fg: #E5EBEF; --muted: #98A7B2; --line: #2A3841;
   --accent: #7CC8BF; --on-accent: #0E1A1A; --break: #8FB1D6; color-scheme: dark;
+  --paper: #242B31; --paper-line: #35424B;
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #11181E; --surface: #18222A; --fg: #E5EBEF; --muted: #98A7B2; --line: #2A3841;
     --accent: #7CC8BF; --on-accent: #0E1A1A; --break: #8FB1D6; color-scheme: dark;
+    --paper: #242B31; --paper-line: #35424B;
+    --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   }
 }
+.pet .stage, .wx .nform { background-color: var(--paper); background-image: var(--grain); border-color: var(--paper-line); }
+.wx .wpick button, .wx .chip, .wx textarea, .wx .fl input, .wx .cal-head button { background-color: color-mix(in srgb, var(--surface) 70%, transparent); }
+.wx .chip[aria-pressed="true"] { background-color: var(--accent); }
+.wx .nh { text-decoration: underline wavy #F2B134; text-decoration-thickness: 3px; text-underline-offset: 7px; text-decoration-skip-ink: none; }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body {
@@ -161,6 +171,17 @@ details.wmore[open] > summary { margin-bottom: 4px; }
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="crayon" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="3" result="w"/>
+      <feDisplacementMap in="SourceGraphic" in2="w" scale="2.4" xChannelSelector="R" yChannelSelector="G" result="d"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" result="g"/>
+      <feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 2.0" result="m"/>
+      <feComposite in="d" in2="m" operator="in"/>
+    </filter>
+  </defs>
+</svg>
 <main>
   <h1>고은영 키우기</h1>
 
@@ -984,13 +1005,14 @@ details.wmore[open] > summary { margin-bottom: 4px; }
     return s;
   }
   function icon(k) {
-    var b = '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false">', e = "</svg>";
-    if (k === "sun") return b + '<circle cx="20" cy="20" r="7" fill="#F2B134"/>' + rays(20, 20, 11, 15, "#F2B134") + e;
-    if (k === "pcloud") return b + '<circle cx="15" cy="14" r="6" fill="#F2B134"/>' + rays(15, 14, 9, 12, "#F2B134") + '<path d="' + CLOUD + '" transform="translate(4 3)" fill="#D5E0E7" stroke="#8FA3B1" stroke-width="1.3"/>' + e;
-    if (k === "cloud") return b + '<path d="' + CLOUD + '" fill="#9FB0BC"/>' + e;
-    if (k === "rain") return b + '<path d="' + CLOUD + '" transform="translate(0 -5)" fill="#9FB0BC"/>' + '<g stroke="#4D8FD6" stroke-width="2.6" stroke-linecap="round"><line x1="14" y1="30" x2="12" y2="36"/><line x1="21" y1="30" x2="19" y2="36"/><line x1="28" y1="30" x2="26" y2="36"/></g>' + e;
-    if (k === "storm") return b + '<path d="' + CLOUD + '" transform="translate(0 -5)" fill="#6F7F8C"/>' + '<polygon points="21,22 15,32 20,32 18,39 27,27 22,27 25,22" fill="#F2C21B"/>' + e;
-    return b + '<g fill="none" stroke-width="2.8" stroke-linecap="round"><path d="M4 31a16 16 0 0 1 32 0" stroke="#E5584F"/><path d="M8.5 31a11.5 11.5 0 0 1 23 0" stroke="#F2B134"/><path d="M13 31a7 7 0 0 1 14 0" stroke="#4D8FD6"/></g>' + e;
+    /* 크레파스로 칠한 듯: 모든 그림을 거친 가장자리와 성긴 칠 효과 필터(#crayon) 안에 그린다 */
+    var b = '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><g filter="url(#crayon)">', e = "</g></svg>";
+    if (k === "sun") return b + '<circle cx="20" cy="20" r="7" fill="#F2B134" stroke="#E08E12" stroke-width="1.6"/>' + rays(20, 20, 11, 15, "#F2B134") + e;
+    if (k === "pcloud") return b + '<circle cx="15" cy="14" r="6" fill="#F2B134" stroke="#E08E12" stroke-width="1.4"/>' + rays(15, 14, 9, 12, "#F2B134") + '<path d="' + CLOUD + '" transform="translate(4 3)" fill="#D5E0E7" stroke="#7F93A1" stroke-width="1.8"/>' + e;
+    if (k === "cloud") return b + '<path d="' + CLOUD + '" fill="#9FB0BC" stroke="#7F93A1" stroke-width="1.8"/>' + e;
+    if (k === "rain") return b + '<path d="' + CLOUD + '" transform="translate(0 -5)" fill="#9FB0BC" stroke="#7F93A1" stroke-width="1.8"/>' + '<g stroke="#4D8FD6" stroke-width="2.8" stroke-linecap="round"><line x1="14" y1="30" x2="12" y2="36"/><line x1="21" y1="30" x2="19" y2="36"/><line x1="28" y1="30" x2="26" y2="36"/></g>' + e;
+    if (k === "storm") return b + '<path d="' + CLOUD + '" transform="translate(0 -5)" fill="#6F7F8C" stroke="#53616C" stroke-width="1.8"/>' + '<polygon points="21,22 15,32 20,32 18,39 27,27 22,27 25,22" fill="#F2C21B" stroke="#D9A400" stroke-width="1.2" stroke-linejoin="round"/>' + e;
+    return b + '<g fill="none" stroke-width="3" stroke-linecap="round"><path d="M4 31a16 16 0 0 1 32 0" stroke="#E5584F"/><path d="M8.5 31a11.5 11.5 0 0 1 23 0" stroke="#F2B134"/><path d="M13 31a7 7 0 0 1 14 0" stroke="#4D8FD6"/></g>' + e;
   }
 
   var FEELS = ["평온", "감사", "기쁨", "설렘", "뿌듯", "괜찮음", "멍함", "지침", "외로움", "불안", "슬픔", "짜증"];
